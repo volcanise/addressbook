@@ -7,7 +7,7 @@ package model;
 
 /**
  *
- * @author Thinkpad
+ * @author shahin.behrooz@gmail.com
  */
 class NameValidator implements Validator {
 

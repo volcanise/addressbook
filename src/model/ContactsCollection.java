@@ -9,7 +9,7 @@ import java.util.Hashtable;
 
 /**
  *
- * @author Thinkpad
+ * @author shahin.behrooz@gmail.com
  */
 public class ContactsCollection {
     private Hashtable<String, Contact> hashTable;

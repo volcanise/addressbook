@@ -7,7 +7,7 @@ package model;
 
 /**
  *
- * @author Thinkpad
+ * @author shahin.behrooz@gmail.com
  */
 public class InvalidFieldException extends Exception {
     public InvalidFieldException(String message){

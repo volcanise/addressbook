@@ -7,7 +7,7 @@ package model;
 
 /**
  *
- * @author Thinkpad
+ * @author shahin.behrooz@gmail.com
  */
 public interface Validator {
     public void validate(String field) throws InvalidFieldException;
