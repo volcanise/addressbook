@@ -28,7 +28,7 @@ public class Contact {
     String getId() {
 //todo ajouter id
     }
-    /** 
+    /** modified for test
      * todo: a ajouter les autres setters selon exemple
      * */
     
