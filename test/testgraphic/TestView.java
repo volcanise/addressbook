@@ -16,6 +16,7 @@ public class TestView {
         AddressBookFrame frame = new AddressBookFrame();
         frame.setTitle("Listes des contacts");
         frame.setSize(790,320);
+        frame.setResizable(false);
         frame.setVisible(true);
     }
 }
