@@ -9,12 +9,14 @@ package model;
  *
  * @author shahin.behrooz@gmail.comsssss
  */
-class TelValidator implements Validator {
+public class TelValidator implements Validator {
 
     public TelValidator() {
     }
-    public void validate(String field) throws InvalidFieldException{
+    public void validate(String field,Contact contact) throws InvalidFieldException{
         // todo ajouter validation
+        if ((Settings.TEL_REQUIRED) && ((field == null) || (field.trim().length() == 0)))
+                throw new InvalidFieldException("Phone number cannot be empty.");
      return;
     }
 

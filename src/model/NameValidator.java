@@ -13,7 +13,7 @@ class NameValidator implements Validator {
 
     public NameValidator() {
     }
-    public void validate(String field) throws InvalidFieldException{
+    public void validate(String field,Contact contact) throws InvalidFieldException{
         // todo ajouter validation
         return;
     }
