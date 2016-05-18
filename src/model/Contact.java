@@ -11,15 +11,25 @@ package model;
  */
 public class Contact {
     //les attribut d<un contact
-    private String name;
+    private String lastName;
     private String tel;
+    private String firstName;
+    private String middleName;
+    private String email;
+    private String address1;
+    private String address2;
+    private String city;
+    private String state;
+    private String zip;
+    private String country;
     // validator pour chaque attribut
     private Validator nameValidator = new NameValidator();
     private Validator telValidator = new TelValidator();
+    private Validator zipValidator = new ZipValidator();
     
-    public void setName(String name) throws InvalidFieldException{
+    public void setLastName(String name) throws InvalidFieldException{
         nameValidator.validate(name);
-        this.name = name;
+        this.lastName = name;
     }
     public void setNameValidator(Validator v){
         nameValidator = v;
