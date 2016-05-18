@@ -28,7 +28,7 @@ public class Contact {
     private Validator zipValidator = new ZipValidator();
     
     public void setLastName(String name) throws InvalidFieldException{
-        nameValidator.validate(name);
+        nameValidator.validate(name,this);
         this.lastName = name;
     }
     public void setNameValidator(Validator v){
@@ -42,5 +42,16 @@ public class Contact {
     /** modified for test
      * todo: a ajouter les autres setters selon exemple
      * */
-    
+    public void setZip(String zip)throws InvalidFieldException{
+        if (Settings.VALIDATE_ZIP)
+            zipValidator.validate(zip,this);
+    }
+    //setCountry must be called before setZip because validation of zip depends on country value
+    public void setCountry(String country){
+        this.country = country;
+    }
+
+    public String getCountry() {
+        return country;
+    }
 }

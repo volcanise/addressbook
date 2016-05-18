@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package test;
-import model.
+import model.Contact;
+import model.ZipValidator;
 /**
  *
  * @author shahin.behrooz@gmail.com
@@ -12,6 +13,12 @@ import model.
 public class test {
     public static void main(String[] args) {
         ZipValidator zv = new ZipValidator();
-        
+        try{
+            Contact contact = new Contact();
+            contact.setCountry("US");
+            contact.setZip("66085");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
