@@ -5,7 +5,7 @@
  */
 package testgraphic;
 
-import paradis.AddressBookFrame;
+import view.AddressBookFrame;
 
 /**
  *
@@ -15,7 +15,7 @@ public class TestView {
     public static void main(String[] args) {
         AddressBookFrame frame = new AddressBookFrame();
         frame.setTitle("Listes des contacts");
-        frame.setSize(350,400);
+        frame.setSize(790,320);
         frame.setVisible(true);
     }
 }
