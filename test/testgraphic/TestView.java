@@ -15,8 +15,7 @@ public class TestView {
     public static void main(String[] args) {
         AddressBookFrame frame = new AddressBookFrame();
         frame.setTitle("Listes des contacts");
-        frame.setSize(840,315);
-        frame.setResizable(false);
+        frame.setSize(350,400);
         frame.setVisible(true);
     }
 }
