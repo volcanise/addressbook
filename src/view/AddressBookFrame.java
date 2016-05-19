@@ -7,13 +7,14 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
-import javax.swing.BoxLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Iterator;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,23 +22,36 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import model.Contact;
+import model.ContactsCollection;
 
 /**
  *
  * @author shahin.behrooz@gmail.com
  */
-public class AddressBookFrame extends JFrame{
+public class AddressBookFrame extends JFrame implements ActionListener, ListSelectionListener{
     JList lstContacts;
     JScrollPane scrPane;
     JTextField txtName;
     JTextField txtTel;
+    
+    JTextField txtCountry;
+    JButton btnDelete;
+    DefaultListModel defModel;
     private JTextField txtLastName;
-
+    ContactsCollection contacts;
     public AddressBookFrame() throws HeadlessException {
         run();
+    }
+
+    public void setContacts(ContactsCollection contacts) {
+        this.contacts = contacts;
+        Iterator<Contact> itr = contacts.getContactsList();
+        while(itr.hasNext())
+        ((DefaultListModel)lstContacts.getModel()).addElement(itr.next());
     }
     
     
@@ -48,11 +62,11 @@ public class AddressBookFrame extends JFrame{
         
         scrPane = new JScrollPane();
         scrPane.setPreferredSize(new Dimension(170, 50));
-        lstContacts = new JList<Contact>();
+        lstContacts = new JList();//todo to be changed to make enable just one selection
         scrPane.setViewportView(lstContacts);
-        DefaultListModel defModel = new DefaultListModel();
-        defModel.addElement("Behrooz,shahin");
+        defModel = new DefaultListModel();
         lstContacts.setModel(defModel);
+        lstContacts.addListSelectionListener(this);
         JPanel rightPanel = new JPanel();
         prepareRightPanel(rightPanel);
         
@@ -61,7 +75,12 @@ public class AddressBookFrame extends JFrame{
         leftPanel.add(scrPane,BorderLayout.CENTER);
         
         JPanel bottomLine = new JPanel(new GridLayout(1,5));
-        bottomLine.add(new JButton("1"));
+        btnDelete = new JButton("Delete");
+        btnDelete.addActionListener(this);
+        bottomLine.add(btnDelete);//todo label to be customized
+        // todo all the following buttons must be declared as the class member as like as Delete button
+        // and their actionlistener must be set to this (AddressBookFrame) and the actionPerformed methode of AddressBookFrame
+        // must be changed to handle other buttons
         bottomLine.add(new JButton("2"));
         bottomLine.add(new JButton("3"));
         bottomLine.add(new JButton("4"));
@@ -98,7 +117,7 @@ public class AddressBookFrame extends JFrame{
     prepareConstraint(c, 1, 1, 2, 0, GridBagConstraints.EAST);
     panel1.add(lblFirstName,c);
     //first name text field
-    JTextField txtFirstName = new JTextField(7);
+    JTextField txtFirstName = new JTextField(7);//todo must be declared as class member
     // same row (gridy=0) next column (gridx=3)
     prepareConstraint(c, 1, 1, 3, 0, GridBagConstraints.WEST);
     panel1.add(txtFirstName,c);
@@ -190,7 +209,7 @@ public class AddressBookFrame extends JFrame{
     prepareConstraint(c, 1, 1, 0, 6, GridBagConstraints.EAST);
     panel1.add(lblCountry,c);
     // address1 text field. gridx=1 gridy=6 gridwidth=2
-    JTextField txtCountry = new JTextField();
+    txtCountry = new JTextField();
     prepareConstraint(c, 2, 1, 1, 6, GridBagConstraints.WEST);
     c.fill = GridBagConstraints.HORIZONTAL;
     panel1.add(txtCountry,c);
@@ -204,6 +223,27 @@ public class AddressBookFrame extends JFrame{
         c.gridx = gridx;
         c.gridy = gridy;
         c.anchor = anchor;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object obj = e.getSource();
+        if (obj.equals(btnDelete))
+        {
+            Object contact = lstContacts.getSelectedValue();
+            if (contact != null)
+            {
+                defModel.removeElement(contact);//delete from JList
+                contacts.deleteContact((Contact)contact);//delete from repository
+            }
+        }
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        Contact ct = (Contact)lstContacts.getSelectedValue();
+        String cnty = ct.getCountry();
+        txtCountry.setText(cnty);
     }
     
 }

@@ -14,7 +14,7 @@ public class TelValidator implements Validator {
     public TelValidator() {
     }
     public void validate(String field,Contact contact) throws InvalidFieldException{
-        // todo ajouter validation
+        //todo exception message must be customized
         if ((Settings.TEL_REQUIRED) && ((field == null) || (field.trim().length() == 0)))
                 throw new InvalidFieldException("Phone number cannot be empty.");
      return;

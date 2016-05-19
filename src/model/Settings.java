@@ -12,6 +12,7 @@ package model;
 public class Settings {
     public static final int CA = 25;
     public static final int US = 30;
+    public static final int OTHER = -1;
     
     //initialises at start up
     public static int DEFAULT_COUNTRY = CA;

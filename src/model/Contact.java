@@ -54,4 +54,10 @@ public class Contact {
     public String getCountry() {
         return country;
     }
+
+    @Override
+    public String toString() {
+        return  lastName ;
+    }
+    
 }

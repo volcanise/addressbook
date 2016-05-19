@@ -5,24 +5,29 @@
  */
 package model;
 
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 /**
  *
  * @author shahin.behrooz@gmail.com
  */
 public class ContactsCollection {
-    private Hashtable<String, Contact> hashTable;
+    HashSet contactsSet;
     public ContactsCollection(){
-        hashTable = new Hashtable<String, Contact>();
+        contactsSet = new HashSet<Contact>();
     }
     public void addContact(Contact c){
-        hashTable.put(c.getId(), c);
+        contactsSet.add(c);
     }
-    public void load(Hashtable<String, Contact> source){
+    /*public void load(Hashtable<String, Contact> source){
         hashTable.putAll(source);
+    }*/
+    public void deleteContact(Contact c){
+        contactsSet.remove(c);
     }
-    public void deleteContact(String id){
-        hashTable.remove(id);
+    public Iterator<Contact> getContactsList(){
+        return contactsSet.iterator();
     }
 }

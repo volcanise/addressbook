@@ -12,11 +12,11 @@ import model.ZipValidator;
  */
 public class test {
     public static void main(String[] args) {
-        ZipValidator zv = new ZipValidator();
         try{
             Contact contact = new Contact();
             contact.setCountry("US");
             contact.setZip("66085");
+
         }catch(Exception e){
             e.printStackTrace();
         }

@@ -31,6 +31,8 @@ public class ZipValidator implements Validator {
             country = Settings.CA;
         else if (countryStr == "US")
             country = Settings.US;
+        else 
+            country = Settings.OTHER;
         switch (country){
             case(Settings.CA):
                 if (!field.matches(CA_ZIP_PATTERN))
