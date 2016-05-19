@@ -242,8 +242,16 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     @Override
     public void valueChanged(ListSelectionEvent e) {
         Contact ct = (Contact)lstContacts.getSelectedValue();
+        if (ct == null)
+        {resetTextFields();
+        return;
+        }
         String cnty = ct.getCountry();
         txtCountry.setText(cnty);
+    }
+    //this method make the text fields empty. to be called when no contact is selected in jlist 
+    private void resetTextFields(){
+        txtCountry.setText("");//todo adding other text fields
     }
     
 }
