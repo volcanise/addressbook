@@ -5,6 +5,8 @@
  */
 package model;
 
+import java.io.File;
+
 /**
  *
  * @author shahin.behrooz@gmail.com
@@ -19,4 +21,7 @@ public class Settings {
     public static boolean VALIDATE_ZIP = true;
     public static boolean TEL_REQUIRED = true;
     public static boolean ZIP_REQUIRED = true;
+    public static ContactsCollection registry;
+    public static File DATA_FILE;
+    public static String DELIMITER;// = ",";
 }

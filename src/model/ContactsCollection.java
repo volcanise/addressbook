@@ -5,21 +5,23 @@
  */
 package model;
 
-import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.Collection;
 import java.util.Iterator;
-
+import java.util.TreeSet;
 /**
  *
  * @author shahin.behrooz@gmail.com
  */
 public class ContactsCollection {
-    HashSet contactsSet;
+    TreeSet contactsSet;
     public ContactsCollection(){
-        contactsSet = new HashSet<Contact>();
+        contactsSet = new TreeSet<Contact>();
     }
     public void addContact(Contact c){
         contactsSet.add(c);
+    }
+    public void addAll(Collection<Contact> cn){
+        contactsSet.addAll(cn);
     }
     /*public void load(Hashtable<String, Contact> source){
         hashTable.putAll(source);
@@ -29,5 +31,8 @@ public class ContactsCollection {
     }
     public Iterator<Contact> getContactsList(){
         return contactsSet.iterator();
+    }
+    public boolean contains(Object obj){
+        return contactsSet.contains(obj);
     }
 }

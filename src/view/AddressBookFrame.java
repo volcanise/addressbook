@@ -36,13 +36,21 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     JList lstContacts;
     JScrollPane scrPane;
     JTextField txtName;
-    JTextField txtTel;
     
     JTextField txtCountry;
     JButton btnDelete;
     DefaultListModel defModel;
     private JTextField txtLastName;
     ContactsCollection contacts;
+    private JTextField txtFirstName;
+    private JTextField txtMiddleName;
+    private JTextField txtPhone;
+    private JTextField txtEmail;
+    private JTextField txtAddress1;
+    private JTextField txtAddress2;
+    private JTextField txtCity;
+    private JTextField txtZip;
+    private JTextField txtState;
     public AddressBookFrame() throws HeadlessException {
         run();
     }
@@ -117,7 +125,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     prepareConstraint(c, 1, 1, 2, 0, GridBagConstraints.EAST);
     panel1.add(lblFirstName,c);
     //first name text field
-    JTextField txtFirstName = new JTextField(7);//todo must be declared as class member
+    txtFirstName = new JTextField(7);//todo must be declared as class member
     // same row (gridy=0) next column (gridx=3)
     prepareConstraint(c, 1, 1, 3, 0, GridBagConstraints.WEST);
     panel1.add(txtFirstName,c);
@@ -127,7 +135,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     prepareConstraint(c, 1, 1, 4, 0, GridBagConstraints.EAST);
     panel1.add(lblMiddleName,c);
     //text field for middle name
-    JTextField txtMiddleName = new JTextField(7);
+    txtMiddleName = new JTextField(7);
     //same row gridy=0 and next column gridx=5
     prepareConstraint(c, 1, 1, 5, 0, GridBagConstraints.WEST);
     panel1.add(txtMiddleName,c);
@@ -138,7 +146,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     panel1.add(lblPhone,c);
     //text field gridx=1 gridy=1 fill horozon
     c.fill = GridBagConstraints.HORIZONTAL;
-    JTextField txtPhone = new JTextField();
+    txtPhone = new JTextField();
     prepareConstraint(c, 1, 1, 1, 1, GridBagConstraints.WEST);
     panel1.add(txtPhone,c);
     c.fill = GridBagConstraints.NONE;
@@ -148,7 +156,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     panel1.add(lblEmail,c);
     //email text field gridx=3 gridy=1 gridwidth=2
     c.fill = GridBagConstraints.HORIZONTAL;
-    JTextField txtEmail = new JTextField();
+    txtEmail = new JTextField();
     prepareConstraint(c, 2, 1, 3, 1, GridBagConstraints.WEST);
     panel1.add(txtEmail,c);
     c.fill = GridBagConstraints.NONE;
@@ -157,7 +165,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     prepareConstraint(c, 1, 1, 0, 2, GridBagConstraints.EAST);
     panel1.add(lblAddress1,c);
     // address1 text field. gridx=1 gridy=2 gridwidth=2
-    JTextField txtAddress1 = new JTextField();
+    txtAddress1 = new JTextField();
     prepareConstraint(c, 2, 1, 1, 2, GridBagConstraints.WEST);
     c.fill = GridBagConstraints.HORIZONTAL;
     panel1.add(txtAddress1,c);
@@ -167,7 +175,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     prepareConstraint(c, 1, 1, 0, 3, GridBagConstraints.EAST);
     panel1.add(lblAddress2,c);
     // address1 text field. gridx=1 gridy=3 gridwidth=2
-    JTextField txtAddress2 = new JTextField();
+    txtAddress2 = new JTextField();
     prepareConstraint(c, 2, 1, 1, 3, GridBagConstraints.WEST);
     c.fill = GridBagConstraints.HORIZONTAL;
     panel1.add(txtAddress2,c);
@@ -177,7 +185,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     prepareConstraint(c, 1, 1, 0, 4, GridBagConstraints.EAST);
     panel1.add(lblCity,c);
     // city text field. gridx=1 gridy=4 gridwidth=2
-    JTextField txtCity = new JTextField();
+    txtCity = new JTextField();
     prepareConstraint(c, 2, 1, 1, 4, GridBagConstraints.WEST);
     c.fill = GridBagConstraints.HORIZONTAL;
     panel1.add(txtCity,c);
@@ -188,7 +196,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     panel1.add(lblState,c);
 
     // city text field. gridx=1 gridy=5 gridwidth=2
-    JTextField txtState = new JTextField();
+    txtState = new JTextField();
     prepareConstraint(c, 2, 1, 1, 5, GridBagConstraints.WEST);
     c.fill = GridBagConstraints.HORIZONTAL;
     panel1.add(txtState,c);
@@ -199,7 +207,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     panel1.add(lblZip,c);
 
     // city text field. gridx=1 gridy=5 gridwidth=2
-    JTextField txtZip = new JTextField();
+    txtZip = new JTextField();
     prepareConstraint(c, 1, 1, 4, 5, GridBagConstraints.WEST);
     c.fill = GridBagConstraints.HORIZONTAL;
     panel1.add(txtZip,c);
@@ -243,11 +251,21 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     public void valueChanged(ListSelectionEvent e) {
         Contact ct = (Contact)lstContacts.getSelectedValue();
         if (ct == null)
-        {resetTextFields();
+        {
+        resetTextFields();
         return;
         }
-        String cnty = ct.getCountry();
-        txtCountry.setText(cnty);
+        txtCountry.setText(ct.getCountry());
+        txtLastName.setText(ct.getLastName());
+        txtFirstName.setText(ct.getFirstName());
+        txtMiddleName.setText(ct.getMiddleName());
+        txtPhone.setText(ct.getTel());
+        txtAddress1.setText(ct.getAddress1());
+        txtAddress2.setText(ct.getAddress2());
+        txtCity.setText(ct.getCity());
+        txtState.setText(ct.getState());
+        txtEmail.setText(ct.getEmail());
+        txtZip.setText(ct.getZip());
     }
     //this method make the text fields empty. to be called when no contact is selected in jlist 
     private void resetTextFields(){
