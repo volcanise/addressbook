@@ -10,17 +10,21 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import model.Contact;
+import model.ContactsCollection;
 import model.InvalidFieldException;
 import model.Settings;
+import utils.Utility;
 
 /**
  *
  * @author shahin.behrooz@gmail.com
  */
-public class FileContactsLoader implements ContactsLoader, ContactsSaver{
+public class FileContactsHandler implements ContactsLoader, ContactsSaver{
 
     @Override
     public Collection<Contact> loadContacts() throws Exception{
@@ -34,6 +38,7 @@ public class FileContactsLoader implements ContactsLoader, ContactsSaver{
         if (c != null)
             lst.add(c);
             };
+        fin.close();
         return lst;
     }catch(Exception e){
         throw e;
@@ -76,9 +81,33 @@ public class FileContactsLoader implements ContactsLoader, ContactsSaver{
         return contact;
     }
     @Override
-    public void save(Collection<Contact> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void save(Iterator<Contact> itr) throws Exception{
+       FileOutputStream fout = new FileOutputStream(Settings.DATA_FILE);
+        PrintWriter printer = new PrintWriter(fout);
+        while(itr.hasNext()){
+            Contact cnt = itr.next();
+            printer.println(prepareString(cnt));
+        }
+        printer.flush();
+        //printer.close();
+        fout.close();
     }
+
+    private String prepareString(Contact contact) {
+        String record = Utility.nvl(contact.getLastName(),"") + Settings.DELIMITER +
+                        Utility.nvl(contact.getMiddleName(),"") + Settings.DELIMITER +
+                        Utility.nvl(contact.getFirstName(),"") + Settings.DELIMITER +
+                        Utility.nvl(contact.getTel(),"") + Settings.DELIMITER +
+                        Utility.nvl(contact.getEmail(),"") + Settings.DELIMITER +
+                        Utility.nvl(contact.getCountry(),"") + Settings.DELIMITER +
+                        Utility.nvl(contact.getZip(),"") + Settings.DELIMITER +
+                        Utility.nvl(contact.getState(),"") + Settings.DELIMITER +
+                        Utility.nvl(contact.getAddress1(),"") + Settings.DELIMITER +
+                        Utility.nvl(contact.getAddress2(),"") + Settings.DELIMITER +
+                        Utility.nvl(contact.getCity(),"");
+                return record;
+       }
+
     
     
 }

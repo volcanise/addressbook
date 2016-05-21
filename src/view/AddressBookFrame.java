@@ -27,6 +27,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import model.Contact;
 import model.ContactsCollection;
+import model.Settings;
+import persistence.FileContactsHandler;
 
 /**
  *
@@ -51,6 +53,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     private JTextField txtCity;
     private JTextField txtZip;
     private JTextField txtState;
+    private JButton btnSave;
     public AddressBookFrame() throws HeadlessException {
         run();
     }
@@ -89,7 +92,9 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         // todo all the following buttons must be declared as the class member as like as Delete button
         // and their actionlistener must be set to this (AddressBookFrame) and the actionPerformed methode of AddressBookFrame
         // must be changed to handle other buttons
-        bottomLine.add(new JButton("2"));
+        btnSave = new JButton("Save");//todo make label customized
+        btnSave.addActionListener(this);
+        bottomLine.add(btnSave);
         bottomLine.add(new JButton("3"));
         bottomLine.add(new JButton("4"));
         bottomLine.add(new JButton("5"));
@@ -236,6 +241,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     @Override
     public void actionPerformed(ActionEvent e) {
         Object obj = e.getSource();
+        //delete
         if (obj.equals(btnDelete))
         {
             Object contact = lstContacts.getSelectedValue();
@@ -245,6 +251,19 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
                 contacts.deleteContact((Contact)contact);//delete from repository
             }
         }
+        //end of delete
+        //save
+        if (obj.equals(btnSave))
+        {
+            FileContactsHandler fhandler = new FileContactsHandler();
+            try{
+            fhandler.save(Settings.registry.getContactsList());
+            }catch(Exception ex){
+                ex.printStackTrace(System.out);
+            }
+        }
+        //end of save command handling
+
     }
 
     @Override

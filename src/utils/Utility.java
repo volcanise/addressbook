@@ -18,4 +18,7 @@ public class Utility {
     public static boolean isEmpty(String str){
         return (str == null) || (str.trim().length() == 0);
     }
+    public static String nvl(Object obj,String s){
+        return (obj == null)?s:obj.toString();//if obj equals null return value of s otherwise return string value of obj
+    }
 }

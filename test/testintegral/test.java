@@ -12,7 +12,7 @@ import java.util.Properties;
 import model.Contact;
 import model.ContactsCollection;
 import model.Settings;
-import persistence.FileContactsLoader;
+import persistence.FileContactsHandler;
 import view.AddressBookFrame;
 
 /**
@@ -93,15 +93,15 @@ public class test {
                Settings.DELIMITER = value;
            ContactsCollection registry = new ContactsCollection();
            Settings.registry = registry;
-           FileContactsLoader loader = new FileContactsLoader();
+           FileContactsHandler loader = new FileContactsHandler();
            Collection collection = loader.loadContacts();
            registry.addAll(collection);
            AddressBookFrame frame = new AddressBookFrame();
            frame.setContacts(registry);
            frame.setTitle("Listes des contacts");
            frame.setSize(790,320);
-            frame.setResizable(false);
-            frame.setVisible(true);
+           frame.setResizable(false);
+           frame.setVisible(true);
                 }catch(Exception e){
             e.printStackTrace();
         }

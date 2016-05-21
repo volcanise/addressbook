@@ -6,13 +6,14 @@
 package persistence;
 
 import java.util.Collection;
+import java.util.Iterator;
 import model.Contact;
 
 /**
  *
  * @author shahin.behrooz@gmail.com
  */
-public interface ContactsSaver {
-    public void save(Collection<Contact> c);
+public interface ContactsSaver{
+    public void save(Iterator<Contact> itr) throws Exception;
     
 }
