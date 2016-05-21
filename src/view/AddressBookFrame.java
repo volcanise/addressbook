@@ -244,6 +244,11 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         //delete
         if (obj.equals(btnDelete))
         {
+            //todo by mohamed: Before proceeding to delete must obtain user's confirmation
+            // needs to create a dialog
+            // create a method named getConfirmation that returns boolean
+            // if returned value is true proceed to delete otherwise do nothing
+   // if (getConfirmation()){         
             Object contact = lstContacts.getSelectedValue();
             if (contact != null)
             {
@@ -251,6 +256,8 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
                 contacts.deleteContact((Contact)contact);//delete from repository
             }
         }
+        //}
+        //else return; do nothing
         //end of delete
         //save
         if (obj.equals(btnSave))
@@ -288,7 +295,11 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     }
     //this method make the text fields empty. to be called when no contact is selected in jlist 
     private void resetTextFields(){
-        txtCountry.setText("");//todo adding other text fields
+        txtCountry.setText("");//todo by mohamed other text fields must be set to ""
     }
-    
+    /*
+    private boolean getConfirmation(){
+    // show a modal dialog to get confirmation
+    }
+    */
 }
