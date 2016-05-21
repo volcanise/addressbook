@@ -29,6 +29,7 @@ import model.Contact;
 import model.ContactsCollection;
 import model.Settings;
 import persistence.FileContactsHandler;
+import utils.Utility;
 
 /**
  *
@@ -86,7 +87,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         leftPanel.add(scrPane,BorderLayout.CENTER);
         
         JPanel bottomLine = new JPanel(new GridLayout(1,5));
-        btnDelete = new JButton("Delete");
+        btnDelete = new JButton(Utility.getString("addressbook.button.delete"));
         btnDelete.addActionListener(this);
         bottomLine.add(btnDelete);//todo label to be customized
         // todo all the following buttons must be declared as the class member as like as Delete button

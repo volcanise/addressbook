@@ -5,6 +5,10 @@
  */
 package utils;
 
+import java.text.MessageFormat;
+import java.util.MissingResourceException;
+import model.Settings;
+
 /**
  *
  * @author shahin.behrooz@gmail.com
@@ -20,5 +24,23 @@ public class Utility {
     }
     public static String nvl(Object obj,String s){
         return (obj == null)?s:obj.toString();//if obj equals null return value of s otherwise return string value of obj
+    }
+    public static String getString(String key){
+        try{
+        return Settings.messages.getString(key);
+        }catch(MissingResourceException e){
+            System.out.println(key + " is not a valid key.");
+            return key;
+        }
+
+    }
+    public static String getString(String key,String[] params){
+        String message = Settings.messages.getString(key);
+        try{
+        return MessageFormat.format(message, params);
+        }catch(MissingResourceException e){
+            System.out.println(key + " is not a valid key.");
+            return key;
+        }
     }
 }

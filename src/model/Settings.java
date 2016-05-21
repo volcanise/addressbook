@@ -6,6 +6,8 @@
 package model;
 
 import java.io.File;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -24,4 +26,6 @@ public class Settings {
     public static ContactsCollection registry;
     public static File DATA_FILE;
     public static String DELIMITER;// = ",";
+    public static Locale LOCALE = new Locale("en","CA");
+    public static ResourceBundle messages = ResourceBundle.getBundle("resources",LOCALE);
 }
