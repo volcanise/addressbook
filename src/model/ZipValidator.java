@@ -18,9 +18,6 @@ public class ZipValidator implements Validator {
         this.country = Settings.DEFAULT_COUNTRY;
     }
 
-    public void setCountry(int country){
-        this.country = country;
-    }
     public void validate(String field,Contact contact) throws InvalidFieldException {
         //todo the messages must be customized
         if (utils.Utility.isEmpty(field) && Settings.ZIP_REQUIRED)
