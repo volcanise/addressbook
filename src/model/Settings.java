@@ -26,6 +26,6 @@ public class Settings {
     public static ContactsCollection registry;
     public static File DATA_FILE;
     public static String DELIMITER;// = ",";
-    public static Locale LOCALE = new Locale("en","CA");
+    public static Locale LOCALE = new Locale("fr","CA");
     public static ResourceBundle messages = ResourceBundle.getBundle("resources",LOCALE);
 }
