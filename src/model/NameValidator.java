@@ -10,13 +10,10 @@ package model;
  * @author shahin.behrooz@gmail.com
  */
 class NameValidator implements Validator {
-    ContactsCollection registry;
     public NameValidator() {
     }
     public void validate(String field,Contact contact) throws InvalidFieldException{
         if (Settings.registry.contains(contact))
             throw new InvalidFieldException("This contact already exists.");//todo change message
     }
-    //ajkshhdjkash
-    //asdasdasdasdasdadsd
 }
