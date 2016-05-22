@@ -5,11 +5,13 @@
  */
 package testintegral;
 
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Properties;
-import model.Contact;
 import model.ContactsCollection;
 import model.Settings;
 import persistence.FileContactsHandler;
@@ -19,34 +21,11 @@ import view.AddressBookFrame;
  *
  * @author shahin.behrooz@gmail.com
  */
-public class test {
-    public static void main(String[] args) {
-                try{
-           /* Contact contact1 = new Contact();
-            contact1.setCountry("US");
-            contact1.setZip("66085");
-            contact1.setLastName("shahin");
-            
-            Contact contact2 = new Contact();
-            contact2.setCountry("FR");
-            contact2.setZip("66085");
-            contact2.setLastName("ahmad");
-            Contact contact3 = new Contact();
-            contact3.setCountry("US");
-            contact3.setZip("66085");
-            contact3.setLastName("salem");
-            ContactsCollection cc = new ContactsCollection();
-            cc.addContact(contact3);
-            cc.addContact(contact2);
-            cc.addContact(contact1);
-            Settings.registry = cc;
-             AddressBookFrame frame = new AddressBookFrame();
-            frame.setContacts(cc);
-             frame.setTitle("Listes des contacts");
-           frame.setSize(790,320);
-            frame.setResizable(false);
-            frame.setVisible(true);
-*/
+public class test implements WindowListener, Runnable{
+    Locale initialLocale = Settings.LOCALE;
+    boolean redraw = false;
+    private void createWindow(){
+                    try{
            FileInputStream fin = new FileInputStream(new File("settings.properties"));
            Properties props = new Properties();
            props.load(fin);
@@ -97,14 +76,73 @@ public class test {
            Collection collection = loader.loadContacts();
            registry.addAll(collection);
            AddressBookFrame frame = new AddressBookFrame();
+           frame.addWindowListener(this);
            frame.setContacts(registry);
            frame.setTitle("Listes des contacts");
-           frame.setSize(790,320);
+           frame.setSize(790,330);
            frame.setResizable(false);
            frame.setVisible(true);
-                }catch(Exception e){
+                       }catch(Exception e){
             e.printStackTrace();
         }
 
+    }
+    
+    public static void main (String[] args) throws Throwable{
+        
+        test tst = new test();
+        Object obj = new Object();
+        do{
+        tst.redraw = false;    
+        Thread th = new Thread(tst);
+        th.start();
+        synchronized(tst){
+        try{
+            tst.wait();
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
+        }
+                }
+        while (tst.redraw);
+            
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+    }
+
+    
+    @Override
+    public void windowClosed(WindowEvent e) {
+        if (Settings.LOCALE != initialLocale)
+            redraw = true;
+        synchronized(this){
+        this.notifyAll();}
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+    }
+
+    @Override
+    public void run() {
+    createWindow();
     }
 }

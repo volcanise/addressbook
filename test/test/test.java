@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package test;
+import java.util.Locale;
 import model.Contact;
 import model.ZipValidator;
 /**
@@ -13,10 +14,13 @@ import model.ZipValidator;
 public class test {
     public static void main(String[] args) {
         try{
+            /*
             Contact contact = new Contact();
             contact.setCountry("US");
             contact.setZip("66085");
-
+*/
+            Locale loc = new Locale("fr");
+            System.out.println(loc.getDisplayLanguage(new Locale("en")));
         }catch(Exception e){
             e.printStackTrace();
         }

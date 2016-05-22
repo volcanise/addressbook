@@ -15,19 +15,26 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import model.Contact;
 import model.ContactsCollection;
+import model.Language;
 import model.Settings;
+import static model.Settings.LOCALE;
 import persistence.FileContactsHandler;
 import utils.Utility;
 
@@ -55,6 +62,8 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     private JTextField txtZip;
     private JTextField txtState;
     private JButton btnSave;
+    private JComboBox<String> comboLanguage;
+    private JButton btnApply;
     public AddressBookFrame() throws HeadlessException {
         run();
     }
@@ -109,7 +118,29 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(middlePanel,BorderLayout.CENTER);
         mainPanel.add(bottomLine,BorderLayout.SOUTH);
-        this.setContentPane(mainPanel);
+        
+        JPanel settingsPanel = new JPanel();
+        // add language option
+        JPanel internalPanel = new JPanel();
+        internalPanel.add(new JLabel(Utility.getString("settingspanel.label.language")));
+        Vector items = new Vector();
+        for (String lang:Settings.SUPPURTED_LANGS)
+        {
+            Locale locale = new Locale(lang);
+            Language item = new Language(lang,locale.getDisplayLanguage(locale));
+            items.add(item);
+        }
+        comboLanguage = new JComboBox(items);
+        btnApply = new JButton(Utility.getString("settingpanel.button.apply"));
+        btnApply.addActionListener(this);
+        internalPanel.add(comboLanguage);
+        internalPanel.add(btnApply);
+        settingsPanel.add(internalPanel);
+        
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.add(Utility.getString("firsttab.title"),mainPanel);//todo must be localized
+        tabbedPane.add(Utility.getString("secondtab.title"),settingsPanel);
+        this.setContentPane(tabbedPane);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     }
 
@@ -260,8 +291,8 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         //}
         //else return; do nothing
         //end of delete
-        //save
-        if (obj.equals(btnSave))
+        //start of save button handling
+        else if (obj.equals(btnSave))
         {
             FileContactsHandler fhandler = new FileContactsHandler();
             try{
@@ -271,6 +302,15 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
             }
         }
         //end of save command handling
+        // start of handling apply setting
+        else if (obj.equals(btnApply)){
+            Language lang = (Language)comboLanguage.getSelectedItem();
+            Locale locale = new Locale(lang.getCode());
+            Settings.LOCALE = locale;
+            Settings.resources = ResourceBundle.getBundle("resources",LOCALE);
+            this.setVisible(false);
+            this.dispose();
+        }
 
     }
 
