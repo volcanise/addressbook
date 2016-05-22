@@ -8,6 +8,7 @@ package model;
 /**
  *
  * @author shahin.behrooz@gmail.com
+ * 
  */
 class NameValidator implements Validator {
     ContactsCollection registry;
