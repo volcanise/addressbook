@@ -79,8 +79,8 @@ public class test implements WindowListener, Runnable{
            frame.addWindowListener(this);
            frame.setContacts(registry);
            frame.setTitle("Listes des contacts");
-           frame.setSize(790,330);
-           frame.setResizable(false);
+//           frame.setSize(790,330);
+           frame.pack();
            frame.setVisible(true);
                        }catch(Exception e){
             e.printStackTrace();
