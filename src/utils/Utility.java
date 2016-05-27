@@ -27,7 +27,7 @@ public class Utility {
     }
     public static String getString(String key){
         try{
-        return Settings.messages.getString(key);
+        return Settings.resources.getString(key);
         }catch(MissingResourceException e){
             System.out.println(key + " is not a valid key.");
             return key;
@@ -35,8 +35,9 @@ public class Utility {
 
     }
     public static String getString(String key,String[] params){
-        String message = Settings.messages.getString(key);
+        String message = Settings.resources.getString(key);
         try{
+            
         return MessageFormat.format(message, params);
         }catch(MissingResourceException e){
             System.out.println(key + " is not a valid key.");
