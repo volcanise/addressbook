@@ -24,9 +24,9 @@ public class ZipValidator implements Validator {
             throw new InvalidFieldException("ZIP code is required.");//todo to be customized
         String countryStr = contact.getCountry();
         if (!utils.Utility.isEmpty(countryStr))
-        if (countryStr == "CA")
+        if (countryStr.equals("CA"))
             country = Settings.CA;
-        else if (countryStr == "US")
+        else if (countryStr.equals("US"))
             country = Settings.US;
         else 
             country = Settings.OTHER;

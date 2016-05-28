@@ -322,10 +322,9 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         else if (obj.equals(btnCancel)) {
             handleCancelCommand();
         }
-        
-
-        
-
+        else if (obj.equals(btnNew)) {
+            handleNewCommand();
+        }
     }
 
     @Override
@@ -425,10 +424,13 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     }
 
     private void handleSaveCommand() {
-            if (txtLastName.isEditable())//edit or new a contact
+            if (txtLastName.isEditable())//edit shows we are in the process of editing
             {
-                applyChanges(); // applies changes 
-                setTextFieldsEditability(false);
+                boolean success = applyChanges(); // applies changes 
+                if (success)
+                    setTextFieldsEditability(false);
+                else
+                    return;
             }
             FileContactsHandler fhandler = new FileContactsHandler();
             try {
@@ -448,7 +450,8 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         // the null value show an edit is not under treatment
     }
 
-    private void applyChanges() {
+    private boolean applyChanges() {//boolean edit shows whether we want to edit a contact or create a new one 
+        boolean edit = (contactForEdit == null)?false:true;
         Contact cont = new Contact();
         cont.setAddress1(txtAddress1.getText().trim());
         cont.setAddress2(txtAddress2.getText().trim());
@@ -458,13 +461,17 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         cont.setEmail(txtEmail.getText().trim());
         }catch(InvalidFieldException e){
             showError(e);
-            return;
+            return false;
         }
         cont.setFirstName(txtFirstName.getText().trim());
         try{
         cont.setLastName(txtLastName.getText().trim());
         }catch(InvalidFieldException e){
-            //ignore because it will be checked at end if this contact already exist or not
+        if (!edit)//just when in the process of create new contact the last name must be unique
+        {
+            showError(e);
+            return false;
+        }
         }
         cont.setMiddleName(txtMiddleName.getText().trim());
         cont.setState(txtState.getText().trim());
@@ -473,18 +480,24 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         cont.setZip(txtZip.getText().trim());
         }catch(InvalidFieldException e){
             showError(e);
-            return;
+            return false;
         }
         if (!cont.equals(contactForEdit))
         {
+            if (edit)//just in edit handling it requires to delete previous
             ContactRepository.getInstance().deleteContact(contactForEdit);
             ContactRepository.getInstance().addContact(cont);
         }
-        
+        return true;
     }
 
     private void showError(InvalidFieldException e) {
         System.out.println(e); //todo change it  
+    }
+
+    private void handleNewCommand() {
+        lstContacts.clearSelection();
+        setTextFieldsEditability(true);
     }
 
 }
