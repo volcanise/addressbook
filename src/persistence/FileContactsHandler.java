@@ -42,7 +42,7 @@ public class FileContactsHandler implements ContactsLoader, ContactsSaver{
     }
     }
     private Contact createContact(String str){
-        String[] s = str.split("[" + Settings.DELIMITER + "]");
+        String[] s = str.split("[" + Settings.DELIMITER + "]",-1);//-1 to make it to return empty fields
         if (s == null || s.length != 11)// the number of fields is 11
         {System.out.println("Warning: the line has invalid format. Line contect is: " + str);//just a warning and going to the next line
         return null;

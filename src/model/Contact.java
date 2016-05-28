@@ -39,8 +39,8 @@ public class Contact implements Comparable<Contact>{
     }
 
     String getId() {
-//todo ajouter id
-    return "id";//to be changed to add an id real
+
+    return lastName + firstName;
     }
     /** modified for test
      * todo: a ajouter les autres setters selon exemple

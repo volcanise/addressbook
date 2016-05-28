@@ -7,37 +7,36 @@ package model;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.TreeSet;
 /**
  *
  * @author shahin.behrooz@gmail.com
  */
 public class ContactRepository {
-    private TreeSet contactsSet;
+    private TreeMap contactsSet;
     private static ContactRepository registry = new ContactRepository();//just one registry across the application
     private ContactRepository(){
-        contactsSet = new TreeSet<Contact>();
+        contactsSet = new TreeMap<String,Contact>();
     }
     public static ContactRepository getInstance(){
         return registry;
     }
     public void addContact(Contact c){
-        contactsSet.add(c);
+        contactsSet.put(c.getId(),c);
     }
     public void addAll(Collection<Contact> cn){
-        contactsSet.addAll(cn);
+        for(Contact c:cn)
+            contactsSet.put(c.getId(), c);
     }
-    /*public void load(Hashtable<String, Contact> source){
-        hashTable.putAll(source);
-    }*/
     public void deleteContact(Contact c){
-        contactsSet.remove(c);
+        contactsSet.remove(c.getId());
     }
     public Iterator<Contact> getContactsList(){
-        return contactsSet.iterator();
+        return contactsSet.values().iterator();
     }
     public boolean contains(Object obj){
-        return contactsSet.contains(obj);
+        return contactsSet.containsKey(((Contact)obj).getId());
     }
  
 }
