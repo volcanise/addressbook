@@ -15,13 +15,17 @@ import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -77,6 +81,8 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     private JButton btnSearch;
     private JButton btnCancel;
     private Contact contactForEdit;
+    private JButton btnFileSelect;
+    private JTextField txtFileSelect;
 
     public AddressBookFrame() throws HeadlessException {
         run();
@@ -93,7 +99,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         initComponents();
     }
 
-    void initComponents() {
+    private void initComponents() {
         // Create the ListModel
         defModel = new DefaultListModel();
         //Create the list and put it in a scroll pane.
@@ -147,27 +153,16 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         mainPanel.add(new JSeparator(), BorderLayout.CENTER);// Adding a Jsperator in the Main Panel
         mainPanel.add(bottomLine, BorderLayout.SOUTH);
         // The Settings GUI, add language option
-        JPanel settingsPanel = new JPanel();  
-        JPanel internalPanel = new JPanel();
-        internalPanel.add(new JLabel(Utility.getString("settingspanel.label.language")));
-        Vector items = new Vector();// equivalent to an ArrayList
-        for (String lang : Settings.SUPPURTED_LANGS) {
-            Locale locale = new Locale(lang);
-            Language item = new Language(lang, locale.getDisplayLanguage(locale));
-            items.add(item);
-        }
-        // Settings of the JComboBox
-        comboLanguage = new JComboBox(items);
-        btnApply = new JButton(Utility.getString("settingpanel.button.apply"));
-        btnApply.addActionListener(this);
-        internalPanel.add(comboLanguage);
-        internalPanel.add(btnApply);
-        settingsPanel.add(internalPanel);
+        JPanel settingsPanel = prepareSettingsPanel();
+        //JPanel importPanel = prepareImportPanel();
         // Settings of the JTabbedPane
+        JPanel importPanel = prepareImportPanel();
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.add(Utility.getString("firsttab.title"), mainPanel);//todo must be localized
         tabbedPane.add(Utility.getString("secondtab.title"), settingsPanel);
+        tabbedPane.add(Utility.getString("thirdtab.title"),importPanel);
         this.setContentPane(tabbedPane);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         loadContacts();//it supposes that ContactRepository already loaded by file content
     }
@@ -325,6 +320,10 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         else if (obj.equals(btnNew)) {
             handleNewCommand();
         }
+        else if (obj.equals(btnFileSelect)) {
+            handleFileSelectCommand();
+        }
+ 
     }
 
     @Override
@@ -369,10 +368,9 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     private boolean getConfirmation() {
         UIManager.put("OptionPane.yesButtonText", Utility.getString("deletedialogue.yesbutton"));
         UIManager.put("OptionPane.noButtonText", Utility.getString("deletedialogue.nobutton"));
-        //UIManager.put("OptionPane.cancelButtonText", bundle.getString("Cancel"));
+        UIManager.put("OptionPane.cancelButtonText", Utility.getString("deletedialogue.cancelbutton"));
         UIManager.put("OptionPane.titleText", Utility.getString("deletedialogue.title"));
 
-        int dialogButton = JOptionPane.OK_OPTION;
         int dialogResult = JOptionPane.showConfirmDialog(null, Utility.getString("deletedialogue.message"));
         if (dialogResult == 0) {
             return true;
@@ -492,12 +490,78 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     }
 
     private void showError(InvalidFieldException e) {
-        System.out.println(e); //todo change it  
+        JOptionPane.showMessageDialog(this, e.getMessage());
     }
 
     private void handleNewCommand() {
         lstContacts.clearSelection();
         setTextFieldsEditability(true);
+    }
+
+    private JPanel prepareSettingsPanel() {
+        JPanel settingsPanel = new JPanel();  
+        BoxLayout bl = new BoxLayout(settingsPanel, BoxLayout.Y_AXIS);
+        settingsPanel.setLayout(bl);
+        JPanel topPanel = new JPanel();
+        topPanel.add(new JLabel(Utility.getString("settingspanel.label.email.required")));
+        JCheckBox chkEmail = new JCheckBox();
+        topPanel.add(chkEmail);
+        topPanel.add(new JLabel(Utility.getString("settingspanel.label.zip.required")));
+        JCheckBox chkZip = new JCheckBox();
+        topPanel.add(chkZip);
+        topPanel.add(new JLabel(Utility.getString("settingspanel.label.tel.required")));
+        JCheckBox chkTel = new JCheckBox();
+        topPanel.add(chkTel);
+        settingsPanel.add(topPanel);
+        
+        JPanel meanPanel = new JPanel();
+        JCheckBox chkZipValidation = new JCheckBox();
+        meanPanel.add(new JLabel(Utility.getString("settingspanel.label.zip.validation")));
+        meanPanel.add(chkZipValidation);
+        JCheckBox chkEmailValidation = new JCheckBox();
+        meanPanel.add(new JLabel(Utility.getString("settingspanel.label.email.validation")));
+        meanPanel.add(chkEmailValidation);
+        settingsPanel.add(meanPanel);
+        
+        JPanel dataFilePanel = new JPanel();
+        dataFilePanel.add(new JLabel(Utility.getString("settings.label.fileselect")));
+        btnFileSelect = new JButton(Utility.getString("settingspanel.button.fileselect"));
+        btnFileSelect.addActionListener(this);
+        txtFileSelect = new JTextField();
+        txtFileSelect.setColumns(8);
+        dataFilePanel.add(txtFileSelect);
+        dataFilePanel.add(btnFileSelect);
+        settingsPanel.add(dataFilePanel);
+        JPanel internalPanel = new JPanel();
+        internalPanel.add(new JLabel(Utility.getString("settingspanel.label.language")));
+        Vector items = new Vector();// equivalent to an ArrayList
+        for (String lang : Settings.SUPPURTED_LANGS) {
+            Locale locale = new Locale(lang);
+            Language item = new Language(lang, locale.getDisplayLanguage(locale));
+            items.add(item);
+        }
+        // Settings of the JComboBox
+        comboLanguage = new JComboBox(items);
+        btnApply = new JButton(Utility.getString("settingpanel.button.apply"));
+        btnApply.addActionListener(this);
+        internalPanel.add(comboLanguage);
+        internalPanel.add(btnApply);
+        settingsPanel.add(internalPanel);
+        return settingsPanel;
+    }
+
+    private JPanel prepareImportPanel() {
+    JPanel panel = new JPanel();
+    return panel;
+    }
+
+    private void handleFileSelectCommand() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setVisible(true);
+        File dataFile = chooser.getSelectedFile();
+        if (dataFile.exists()){
+            Settings.DATA_FILE = dataFile;
+        }
     }
 
 }
