@@ -32,10 +32,12 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import model.Contact;
-import model.ContactsCollection;
+import model.ContactRepository;
+import model.InvalidFieldException;
 import model.Language;
 import model.Settings;
 import static model.Settings.LOCALE;
@@ -56,7 +58,6 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
 
     DefaultListModel defModel;
     private JTextField txtLastName;
-    ContactsCollection contacts;
     private JTextField txtFirstName;
     private JTextField txtMiddleName;
     private JTextField txtPhone;
@@ -75,14 +76,14 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     private JButton btnSave;
     private JButton btnSearch;
     private JButton btnCancel;
+    private Contact contactForEdit;
 
     public AddressBookFrame() throws HeadlessException {
         run();
     }
 
-    public void setContacts(ContactsCollection contacts) {
-        this.contacts = contacts;
-        Iterator<Contact> itr = contacts.getContactsList();
+    public void loadContacts() {
+        Iterator<Contact> itr = ContactRepository.getInstance().getContactsList();
         while (itr.hasNext()) {
             ((DefaultListModel) lstContacts.getModel()).addElement(itr.next());//Returns:the ListModel that provides the displayed list of items
         }
@@ -118,10 +119,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         btnNew = new JButton(Utility.getString("addressbook.button.new"));//todo make label customized
         btnNew.addActionListener(this);
         bottomLine.add(btnNew);
-        //todo label to be customized
-        // todo all the following buttons must be declared as the class member as like as Delete button
-        // and their actionlistener must be set to this (AddressBookFrame) and the actionPerformed methode of AddressBookFrame
-        // must be changed to handle other buttons
+        
         btnDelete = new JButton(Utility.getString("addressbook.button.delete"));
         btnDelete.addActionListener(this);
         bottomLine.add(btnDelete);
@@ -135,7 +133,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         btnSearch.addActionListener(this);
         bottomLine.add(btnSearch);
         btnCancel = new JButton(Utility.getString("addressbook.button.cancel"));
-        btnSearch.addActionListener(this);
+        btnCancel.addActionListener(this);
         bottomLine.add(btnCancel);
 
         //middle panel contains right panel and list
@@ -171,6 +169,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         tabbedPane.add(Utility.getString("secondtab.title"), settingsPanel);
         this.setContentPane(tabbedPane);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        loadContacts();//it supposes that ContactRepository already loaded by file content
     }
     // Prepare the right panel which includes the GridBagConstraints settings 
     private void prepareRightPanel(JPanel rightPanel) {
@@ -183,6 +182,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         panel1.add(new JLabel(Utility.getString("addressbook.label.lastName")), c);
         // last name textfield
         txtLastName = new JTextField(12);
+        
         //prepareConstraint(c,gridwidth,gridheight,gridx,gridy,anchor);
         prepareConstraint(c, 1, 1, 1, 0, GridBagConstraints.WEST);
         panel1.add(txtLastName, c);
@@ -191,7 +191,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         prepareConstraint(c, 1, 1, 2, 0, GridBagConstraints.EAST);
         panel1.add(lblFirstName, c);
         //first name text field
-        txtFirstName = new JTextField(7);//todo must be declared as class member
+        txtFirstName = new JTextField(7);
         // same row (gridy=0) next column (gridx=3)
         prepareConstraint(c, 1, 1, 3, 0, GridBagConstraints.WEST);
         panel1.add(txtFirstName, c);
@@ -202,6 +202,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         panel1.add(lblMiddleName, c);
         //text field for middle name
         txtMiddleName = new JTextField(7);
+        
         //same row gridy=0 and next column gridx=5
         prepareConstraint(c, 1, 1, 5, 0, GridBagConstraints.WEST);
         panel1.add(txtMiddleName, c);
@@ -287,7 +288,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         prepareConstraint(c, 2, 1, 1, 6, GridBagConstraints.WEST);
         c.fill = GridBagConstraints.HORIZONTAL;
         panel1.add(txtCountry, c);
-
+        setTextFieldsEditability(false);
         rightPanel.add(panel1);
     }
     private void prepareConstraint(GridBagConstraints c, int gridwidth, int gridheight, int gridx, int gridy, int anchor) {
@@ -303,48 +304,40 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         Object obj = e.getSource();
         //delete
         if (obj.equals(btnDelete)) {
-
-            //todo by mohamed: Before proceeding to delete must obtain user's confirmation
-            // needs to create a dialog
-            // create a method named getConfirmation that returns boolean
-            // if returned value is true proceed to delete otherwise do nothing
-            if (getConfirmation()) {
-                Object contact = lstContacts.getSelectedValue();
-                if (contact != null) {
-                    defModel.removeElement(contact);//delete from JList
-                    contacts.deleteContact((Contact) contact);//delete from repository
-                }
-            }
+            handleDeleteCommand();
         } //else return; do nothing
         //end of delete
         //start of save button handling
         else if (obj.equals(btnSave)) {
-            FileContactsHandler fhandler = new FileContactsHandler();
-            try {
-                fhandler.save(Settings.registry.getContactsList());
-            } catch (Exception ex) {
-                ex.printStackTrace(System.out);
-            }
+            handleSaveCommand();
         } //end of save command handling
         // start of handling apply setting
         else if (obj.equals(btnApply)) {
-            Language lang = (Language) comboLanguage.getSelectedItem();
-            Locale locale = new Locale(lang.getCode());
-            Settings.LOCALE = locale;
-            Settings.resources = ResourceBundle.getBundle("resources", LOCALE);
-            this.setVisible(false);
-            this.dispose();
+            handleApplyCommand();
         }
+        
+        else if (obj.equals(btnEdit)) {
+            handleEditCommand();
+        }
+        else if (obj.equals(btnCancel)) {
+            handleCancelCommand();
+        }
+        
+
+        
 
     }
 
     @Override
+    // is called when list selection changes and the new values must be shown in text fields
     public void valueChanged(ListSelectionEvent e) {
         Contact ct = (Contact) lstContacts.getSelectedValue();
         if (ct==null) {// How it comes to compare an object to null ?? its an exception once you put it as .equals(null)
             resetTextFields();
             return;
         }
+        if (txtLastName.isEditable())
+            setTextFieldsEditability(false);
         txtCountry.setText(ct.getCountry());
         txtLastName.setText(ct.getLastName());
         txtFirstName.setText(ct.getFirstName());
@@ -360,7 +353,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
 
     //this method make the text fields empty. to be called when no contact is selected in jlist 
     private void resetTextFields() {
-        txtCountry.setText("");//todo by mohamed other text fields must be set to ""
+        txtCountry.setText("");
         txtCountry.setText("");
         txtLastName.setText("");
         txtFirstName.setText("");
@@ -375,24 +368,123 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     }
     // Dialog confirmation whether to proceed with contact delete 
     private boolean getConfirmation() {
-       // To Test !!!!!!!!!!!!!!!!!!!! 
-//        // Confirmation Dialog instance
-//            GuiDeleteConfirm  frame = new GuiDeleteConfirm ();
-//            
-//            frame.pack();
-//
-//            frame.setLocationRelativeTo(null);
-//
-//            frame.setVisible(true);
-//            return GuiDeleteConfirm.state;
+        UIManager.put("OptionPane.yesButtonText", Utility.getString("deletedialogue.yesbutton"));
+        UIManager.put("OptionPane.noButtonText", Utility.getString("deletedialogue.nobutton"));
+        //UIManager.put("OptionPane.cancelButtonText", bundle.getString("Cancel"));
+        UIManager.put("OptionPane.titleText", Utility.getString("deletedialogue.title"));
 
         int dialogButton = JOptionPane.OK_OPTION;
-        int dialogResult = JOptionPane.showConfirmDialog(null, "Would You Like To Delete This Contact From The List", "Warning", dialogButton);
+        int dialogResult = JOptionPane.showConfirmDialog(null, Utility.getString("deletedialogue.message"));
         if (dialogResult == 0) {
             return true;
         }
         return false;
 
+    }
+
+    private void setTextFieldsEditability(boolean b) {
+        txtLastName.setEditable(b);
+        txtFirstName.setEditable(b);
+        txtMiddleName.setEditable(b);
+        txtPhone.setEditable(b);
+        txtEmail.setEditable(b);
+        txtAddress1.setEditable(b);
+        txtAddress2.setEditable(b);
+        txtCity.setEditable(b);
+        txtState.setEditable(b);
+        txtZip.setEditable(b);
+        txtCountry.setEditable(b);
+
+    }
+
+    private void handleDeleteCommand() {
+        Object contact = lstContacts.getSelectedValue();
+        if ((contact !=null) && (getConfirmation())) {
+
+            if (contact != null) {
+                defModel.removeElement(contact);//delete from JList
+                ContactRepository.getInstance().deleteContact((Contact) contact);//delete from repository
+            }
+        }
+
+    }
+
+    private void handleEditCommand() {
+            contactForEdit = (Contact)lstContacts.getSelectedValue();
+            if (contactForEdit != null){
+            setTextFieldsEditability(true);//makes fields editable and lets it until next save or cancel operations
+            }
+    }
+    private void handleApplyCommand() {
+            Language lang = (Language) comboLanguage.getSelectedItem();
+            Locale locale = new Locale(lang.getCode());
+            Settings.LOCALE = locale;
+            Settings.resources = ResourceBundle.getBundle("resources", LOCALE);
+            this.setVisible(false);
+            this.dispose();
+    }
+
+    private void handleSaveCommand() {
+            if (txtLastName.isEditable())//edit or new a contact
+            {
+                applyChanges(); // applies changes 
+                setTextFieldsEditability(false);
+            }
+            FileContactsHandler fhandler = new FileContactsHandler();
+            try {
+                fhandler.save(ContactRepository.getInstance().getContactsList());
+                defModel.removeAllElements();// removes all elements of jlist
+                loadContacts();
+            } catch (Exception ex) {
+                ex.printStackTrace(System.out);
+            }
+
+    }
+
+    private void handleCancelCommand() {
+        setTextFieldsEditability(false);
+        lstContacts.clearSelection();
+        contactForEdit = null;//this is the contact to be edited. if the user canceled his edit decision this will be set to null
+        // the null value show an edit is not under treatment
+    }
+
+    private void applyChanges() {
+        Contact cont = new Contact();
+        cont.setAddress1(txtAddress1.getText().trim());
+        cont.setAddress2(txtAddress2.getText().trim());
+        cont.setCity(txtCity.getText().trim());
+        cont.setCountry(txtCountry.getText().trim());
+        try{
+        cont.setEmail(txtEmail.getText().trim());
+        }catch(InvalidFieldException e){
+            showError(e);
+            return;
+        }
+        cont.setFirstName(txtFirstName.getText().trim());
+        try{
+        cont.setLastName(txtLastName.getText().trim());
+        }catch(InvalidFieldException e){
+            //ignore because it will be checked at end if this contact already exist or not
+        }
+        cont.setMiddleName(txtMiddleName.getText().trim());
+        cont.setState(txtState.getText().trim());
+        cont.setTel(txtPhone.getText().trim());
+        try{
+        cont.setZip(txtZip.getText().trim());
+        }catch(InvalidFieldException e){
+            showError(e);
+            return;
+        }
+        if (!cont.equals(contactForEdit))
+        {
+            ContactRepository.getInstance().deleteContact(contactForEdit);
+            ContactRepository.getInstance().addContact(cont);
+        }
+        
+    }
+
+    private void showError(InvalidFieldException e) {
+        System.out.println(e); //todo change it  
     }
 
 }

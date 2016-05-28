@@ -14,7 +14,7 @@ class NameValidator implements Validator {
     public NameValidator() {
     }
     public void validate(String field,Contact contact) throws InvalidFieldException{
-        if (Settings.registry.contains(contact))
+        if (ContactRepository.getInstance().contains(contact))
             throw new InvalidFieldException("This contact already exists.");//todo change message
     }
 }

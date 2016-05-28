@@ -12,10 +12,14 @@ import java.util.TreeSet;
  *
  * @author shahin.behrooz@gmail.com
  */
-public class ContactsCollection {
-    TreeSet contactsSet;
-    public ContactsCollection(){
+public class ContactRepository {
+    private TreeSet contactsSet;
+    private static ContactRepository registry = new ContactRepository();//just one registry across the application
+    private ContactRepository(){
         contactsSet = new TreeSet<Contact>();
+    }
+    public static ContactRepository getInstance(){
+        return registry;
     }
     public void addContact(Contact c){
         contactsSet.add(c);
@@ -35,4 +39,5 @@ public class ContactsCollection {
     public boolean contains(Object obj){
         return contactsSet.contains(obj);
     }
+ 
 }

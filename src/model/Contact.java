@@ -5,6 +5,8 @@
  */
 package model;
 
+import java.util.Objects;
+
 /**
  *
  * @author shahin.behrooz@gmail.com
@@ -65,7 +67,10 @@ public class Contact implements Comparable<Contact>{
 
     @Override
     public int compareTo(Contact c) {
-        return (this.getLastName().compareTo(c.getLastName()));
+        int firstCompare = (this.getLastName().compareTo(c.getLastName()));//  first by lastname
+        if (firstCompare == 0)
+            return (this.getFirstName().compareTo(c.firstName));
+        return firstCompare;
     }
 
     /**
@@ -193,6 +198,87 @@ public class Contact implements Comparable<Contact>{
      */
     public String getZip() {
         return zip;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + Objects.hashCode(this.lastName);
+        hash = 53 * hash + Objects.hashCode(this.tel);
+        hash = 53 * hash + Objects.hashCode(this.firstName);
+        hash = 53 * hash + Objects.hashCode(this.middleName);
+        hash = 53 * hash + Objects.hashCode(this.email);
+        hash = 53 * hash + Objects.hashCode(this.address1);
+        hash = 53 * hash + Objects.hashCode(this.address2);
+        hash = 53 * hash + Objects.hashCode(this.city);
+        hash = 53 * hash + Objects.hashCode(this.state);
+        hash = 53 * hash + Objects.hashCode(this.zip);
+        hash = 53 * hash + Objects.hashCode(this.country);
+        hash = 53 * hash + Objects.hashCode(this.nameValidator);
+        hash = 53 * hash + Objects.hashCode(this.telValidator);
+        hash = 53 * hash + Objects.hashCode(this.zipValidator);
+        hash = 53 * hash + Objects.hashCode(this.emailValidator);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Contact other = (Contact) obj;
+        if (!Objects.equals(this.lastName, other.lastName)) {
+            return false;
+        }
+        if (!Objects.equals(this.tel, other.tel)) {
+            return false;
+        }
+        if (!Objects.equals(this.firstName, other.firstName)) {
+            return false;
+        }
+        if (!Objects.equals(this.middleName, other.middleName)) {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        if (!Objects.equals(this.address1, other.address1)) {
+            return false;
+        }
+        if (!Objects.equals(this.address2, other.address2)) {
+            return false;
+        }
+        if (!Objects.equals(this.city, other.city)) {
+            return false;
+        }
+        if (!Objects.equals(this.state, other.state)) {
+            return false;
+        }
+        if (!Objects.equals(this.zip, other.zip)) {
+            return false;
+        }
+        if (!Objects.equals(this.country, other.country)) {
+            return false;
+        }
+        if (!Objects.equals(this.nameValidator, other.nameValidator)) {
+            return false;
+        }
+        if (!Objects.equals(this.telValidator, other.telValidator)) {
+            return false;
+        }
+        if (!Objects.equals(this.zipValidator, other.zipValidator)) {
+            return false;
+        }
+        if (!Objects.equals(this.emailValidator, other.emailValidator)) {
+            return false;
+        }
+        return true;
     }
     
 }

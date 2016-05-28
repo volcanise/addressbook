@@ -12,9 +12,10 @@ import java.io.FileInputStream;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Properties;
-import model.ContactsCollection;
+import model.ContactRepository;
 import model.Settings;
 import persistence.FileContactsHandler;
+import utils.Utility;
 import view.AddressBookFrame;
 
 /**
@@ -71,16 +72,13 @@ public class test implements WindowListener, Runnable{
            value = (String)props.get("DELIMITER");
            if (value != null)
                Settings.DELIMITER = value;
-           ContactsCollection registry = new ContactsCollection();
-           Settings.registry = registry;
+           
            FileContactsHandler loader = new FileContactsHandler();
            Collection collection = loader.loadContacts();
-           registry.addAll(collection);
+           ContactRepository.getInstance().addAll(collection);
            AddressBookFrame frame = new AddressBookFrame();
            frame.addWindowListener(this);
-           frame.setContacts(registry);
-           frame.setTitle("Listes des contacts");
-//           frame.setSize(790,330);
+           frame.setTitle(Utility.getString("addressbook.title"));
            frame.pack();
            frame.setVisible(true);
                        }catch(Exception e){
