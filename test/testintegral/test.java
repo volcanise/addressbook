@@ -28,51 +28,7 @@ public class test implements WindowListener, Runnable{
     private void createWindow(){
                     try{
 
-           FileInputStream fin = new FileInputStream(new File("settings.properties"));
-           Properties props = new Properties();
-           props.load(fin);
-           String value = (String)props.get("DEFAULT_COUNTRY");
-           if (value != null)
-               if (value == "CA") 
-                 Settings.DEFAULT_COUNTRY = Settings.CA;
-               else if (value == "US") 
-                 Settings.DEFAULT_COUNTRY = Settings.US;
-                 else
-                   Settings.DEFAULT_COUNTRY = Settings.OTHER;
-           value = (String)props.get("DATA_FILE");
-           if (value != null)
-               Settings.DATA_FILE = new File(value);
-           else 
-               Settings.DATA_FILE = new File("database.dat");
-           value = (String)props.get("TEL_REQUIRED");
-           if (value != null)
-               if (value.toLowerCase() == "true")
-                   Settings.TEL_REQUIRED = true;
-               else if (value.toLowerCase() == "false")
-                   Settings.TEL_REQUIRED = false;
-           else
-                   Settings.TEL_REQUIRED = true;
-           value = (String)props.get("ZIP_REQUIRED");
-           if (value != null)
-               if (value.toLowerCase() == "true")
-                   Settings.ZIP_REQUIRED = true;
-               else if (value.toLowerCase() == "false")
-                   Settings.ZIP_REQUIRED = false;
-           else
-                   Settings.ZIP_REQUIRED = true;
-           value = (String)props.get("VALIDATE_ZIP");
-           if (value != null)
-               if (value.toLowerCase() == "true")
-                   Settings.VALIDATE_ZIP = true;
-               else if (value.toLowerCase() == "false")
-                   Settings.VALIDATE_ZIP = false;
-           else
-                   Settings.VALIDATE_ZIP = true;
-
-           value = (String)props.get("DELIMITER");
-           if (value != null)
-               Settings.DELIMITER = value;
-           
+           Settings.loadFromFile();
            FileContactsHandler loader = new FileContactsHandler();
            Collection collection = loader.loadContacts();
            ContactRepository.getInstance().addAll(collection);

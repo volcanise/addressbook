@@ -16,6 +16,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -83,6 +84,13 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     private Contact contactForEdit;
     private JButton btnFileSelect;
     private JTextField txtFileSelect;
+    private JLabel lblDataFile;
+    private JButton btnCancelSettings;
+    private JCheckBox chkEmail;
+    private JCheckBox chkZip;
+    private JCheckBox chkTel;
+    private JCheckBox chkZipValidation;
+    private JCheckBox chkEmailValidation;
 
     public AddressBookFrame() throws HeadlessException {
         run();
@@ -323,6 +331,9 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         else if (obj.equals(btnFileSelect)) {
             handleFileSelectCommand();
         }
+        else if (obj.equals(btnCancelSettings)) {
+            handleCancelSettingsCommand();
+        }
  
     }
 
@@ -365,13 +376,13 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         txtZip.setText("");
     }
     // Dialog confirmation whether to proceed with contact delete 
-    private boolean getConfirmation() {
+    private boolean getConfirmation(String message) {
         UIManager.put("OptionPane.yesButtonText", Utility.getString("deletedialogue.yesbutton"));
         UIManager.put("OptionPane.noButtonText", Utility.getString("deletedialogue.nobutton"));
         UIManager.put("OptionPane.cancelButtonText", Utility.getString("deletedialogue.cancelbutton"));
         UIManager.put("OptionPane.titleText", Utility.getString("deletedialogue.title"));
 
-        int dialogResult = JOptionPane.showConfirmDialog(null, Utility.getString("deletedialogue.message"));
+        int dialogResult = JOptionPane.showConfirmDialog(null, message);
         if (dialogResult == 0) {
             return true;
         }
@@ -396,12 +407,9 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
 
     private void handleDeleteCommand() {
         Object contact = lstContacts.getSelectedValue();
-        if ((contact !=null) && (getConfirmation())) {
-
-            if (contact != null) {
+        if ((contact !=null) && (getConfirmation(Utility.getString("deletedialogue.message")))) {
                 defModel.removeElement(contact);//delete from JList
                 ContactRepository.getInstance().deleteContact((Contact) contact);//delete from repository
-            }
         }
 
     }
@@ -412,11 +420,17 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
             setTextFieldsEditability(true);//makes fields editable and lets it until next save or cancel operations
             }
     }
-    private void handleApplyCommand() {
+    private void handleApplyCommand() {//apply settings
             Language lang = (Language) comboLanguage.getSelectedItem();
             Locale locale = new Locale(lang.getCode());
             Settings.LOCALE = locale;
             Settings.resources = ResourceBundle.getBundle("resources", LOCALE);
+            Settings.EMAIL_REQUIRED = chkEmail.isSelected();
+            Settings.VALIDATE_EMAIL = chkEmailValidation.isSelected();
+            Settings.ZIP_REQUIRED = chkZip.isSelected();
+            Settings.VALIDATE_ZIP = chkZipValidation.isSelected();
+            Settings.TEL_REQUIRED = chkTel.isSelected();
+            Settings.saveToFile();
             this.setVisible(false);
             this.dispose();
     }
@@ -504,31 +518,33 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         settingsPanel.setLayout(bl);
         JPanel topPanel = new JPanel();
         topPanel.add(new JLabel(Utility.getString("settingspanel.label.email.required")));
-        JCheckBox chkEmail = new JCheckBox();
+        chkEmail = new JCheckBox();
         topPanel.add(chkEmail);
         topPanel.add(new JLabel(Utility.getString("settingspanel.label.zip.required")));
-        JCheckBox chkZip = new JCheckBox();
+        chkZip = new JCheckBox();
         topPanel.add(chkZip);
         topPanel.add(new JLabel(Utility.getString("settingspanel.label.tel.required")));
-        JCheckBox chkTel = new JCheckBox();
+        chkTel = new JCheckBox();
         topPanel.add(chkTel);
         settingsPanel.add(topPanel);
         
         JPanel meanPanel = new JPanel();
-        JCheckBox chkZipValidation = new JCheckBox();
+        chkZipValidation = new JCheckBox();
         meanPanel.add(new JLabel(Utility.getString("settingspanel.label.zip.validation")));
         meanPanel.add(chkZipValidation);
-        JCheckBox chkEmailValidation = new JCheckBox();
+        chkEmailValidation = new JCheckBox();
         meanPanel.add(new JLabel(Utility.getString("settingspanel.label.email.validation")));
         meanPanel.add(chkEmailValidation);
         settingsPanel.add(meanPanel);
         
         JPanel dataFilePanel = new JPanel();
-        dataFilePanel.add(new JLabel(Utility.getString("settings.label.fileselect")));
+        lblDataFile = new JLabel(Utility.getString("settingspanel.label.fileselect"));
+        dataFilePanel.add(lblDataFile);
         btnFileSelect = new JButton(Utility.getString("settingspanel.button.fileselect"));
         btnFileSelect.addActionListener(this);
         txtFileSelect = new JTextField();
         txtFileSelect.setColumns(8);
+        txtFileSelect.setText(Settings.DATA_FILE.getName());
         dataFilePanel.add(txtFileSelect);
         dataFilePanel.add(btnFileSelect);
         settingsPanel.add(dataFilePanel);
@@ -542,11 +558,15 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         }
         // Settings of the JComboBox
         comboLanguage = new JComboBox(items);
-        btnApply = new JButton(Utility.getString("settingpanel.button.apply"));
+        btnApply = new JButton(Utility.getString("settingspanel.button.apply"));
         btnApply.addActionListener(this);
+        btnCancelSettings = new JButton(Utility.getString("settingspanel.button.cancel"));
+        btnCancelSettings.addActionListener(this);
         internalPanel.add(comboLanguage);
         internalPanel.add(btnApply);
+        internalPanel.add(btnCancelSettings);
         settingsPanel.add(internalPanel);
+        reflectSettings();//reflect settings on components
         return settingsPanel;
     }
 
@@ -556,12 +576,52 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     }
 
     private void handleFileSelectCommand() {
-        JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = new JFileChooser(Settings.DATA_FILE.getPath());
         chooser.setVisible(true);
-        File dataFile = chooser.getSelectedFile();
-        if (dataFile.exists()){
-            Settings.DATA_FILE = dataFile;
+        File dataFile = null;
+        int returnVal = chooser.showOpenDialog(this);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+           dataFile = chooser.getSelectedFile();
+        if  (dataFile.exists())
+        {
+            if(
+            getConfirmation (Utility.getString("settingspanel.file.override",new String[]{dataFile.getName()}))
+            )
+            {
+                Settings.DATA_FILE = dataFile;
+                txtFileSelect.setText(Settings.DATA_FILE.getName());
+            }
         }
+        else//does not exist
+            if (getConfirmation (Utility.getString("settingspanel.file.create",new String[]{dataFile.getName()})))
+            {
+                try{
+                dataFile.createNewFile();
+                Settings.DATA_FILE = dataFile;
+                txtFileSelect.setText(Settings.DATA_FILE.getName());
+                }catch(IOException e){
+                    e.printStackTrace();//todo must be changed
+            }
+        }
+        
     }
 
+}
+
+    private void handleCancelSettingsCommand() {
+       reflectSettings();//reflects Settings on check box values
+    }
+
+    private void reflectSettings() {
+       chkEmail.setSelected(Settings.EMAIL_REQUIRED);
+       chkEmailValidation.setSelected(Settings.VALIDATE_EMAIL);
+       chkTel.setSelected(Settings.TEL_REQUIRED);
+       chkZip.setSelected(Settings.ZIP_REQUIRED);
+       chkZipValidation.setSelected(Settings.VALIDATE_ZIP);
+       txtFileSelect.setText(Settings.DATA_FILE.getName());
+       Language lang = new Language(Settings.LOCALE.getLanguage(),"");
+       comboLanguage.setSelectedItem(lang);
+    }
+    
+    
 }

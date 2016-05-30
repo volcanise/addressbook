@@ -5,6 +5,8 @@
  */
 package model;
 
+import java.util.Objects;
+
 /**
  *
  * @author shahin.behrooz@gmail.com
@@ -37,6 +39,30 @@ public class Language {
     @Override
     public String toString() {
         return display;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Language other = (Language) obj;
+        if (!Objects.equals(this.code, other.code)) {
+            return false;
+        }
+        return true;
     }
     
 }
