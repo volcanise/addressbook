@@ -6,6 +6,8 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -17,11 +19,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -32,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
@@ -91,6 +96,12 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     private JCheckBox chkTel;
     private JCheckBox chkZipValidation;
     private JCheckBox chkEmailValidation;
+    private JTextField txtFileImport;
+    private JRadioButton rdiImport;
+    private JRadioButton rdiExport;
+    private JLabel lblFileImport;
+    private JButton btnFileImport;
+    private JButton btnFileImportProceed;
 
     public AddressBookFrame() throws HeadlessException {
         run();
@@ -154,11 +165,11 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         JPanel middlePanel = new JPanel(new BorderLayout());
         middlePanel.add(scrPane, BorderLayout.WEST);
         middlePanel.add(rightPanel, BorderLayout.CENTER);
-        //Main panel contains middle panel and Buttons line
+        //Main panel contains middle panel and bottomline
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(middlePanel, BorderLayout.NORTH);
-        mainPanel.add(new JSeparator(), BorderLayout.CENTER);// Adding a Jsperator in the Main Panel
+       // mainPanel.add(new JSeparator(), BorderLayout.CENTER);// Adding a Jsperator in the Main Panel
         mainPanel.add(bottomLine, BorderLayout.SOUTH);
         // The Settings GUI, add language option
         JPanel settingsPanel = prepareSettingsPanel();
@@ -334,6 +345,12 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         else if (obj.equals(btnCancelSettings)) {
             handleCancelSettingsCommand();
         }
+        else if (obj.equals(btnFileImport)) {
+            handleFileImportSelectCommand();
+        }
+        else if (obj.equals(btnFileImportProceed)) {
+            handleFileImportProceedCommand();
+        }
  
     }
 
@@ -376,13 +393,13 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         txtZip.setText("");
     }
     // Dialog confirmation whether to proceed with contact delete 
-    private boolean getConfirmation(String message) {
+    private boolean getConfirmation(String message,String title) {
         UIManager.put("OptionPane.yesButtonText", Utility.getString("deletedialogue.yesbutton"));
         UIManager.put("OptionPane.noButtonText", Utility.getString("deletedialogue.nobutton"));
         UIManager.put("OptionPane.cancelButtonText", Utility.getString("deletedialogue.cancelbutton"));
         UIManager.put("OptionPane.titleText", Utility.getString("deletedialogue.title"));
 
-        int dialogResult = JOptionPane.showConfirmDialog(null, message);
+        int dialogResult = JOptionPane.showConfirmDialog(this, message,title,JOptionPane.YES_NO_OPTION );
         if (dialogResult == 0) {
             return true;
         }
@@ -407,7 +424,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
 
     private void handleDeleteCommand() {
         Object contact = lstContacts.getSelectedValue();
-        if ((contact !=null) && (getConfirmation(Utility.getString("deletedialogue.message")))) {
+        if ((contact !=null) && (getConfirmation(Utility.getString("deletedialogue.message"),Utility.getString("deletedialogue.title")))) {
                 defModel.removeElement(contact);//delete from JList
                 ContactRepository.getInstance().deleteContact((Contact) contact);//delete from repository
         }
@@ -446,7 +463,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
             }
             FileContactsHandler fhandler = new FileContactsHandler();
             try {
-                fhandler.save(ContactRepository.getInstance().getContactsList());
+                fhandler.save(ContactRepository.getInstance().getContactsList(),Settings.DATA_FILE);
                 defModel.removeAllElements();// removes all elements of jlist
                 loadContacts();
             } catch (Exception ex) {
@@ -503,8 +520,11 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         return true;
     }
 
-    private void showError(InvalidFieldException e) {
+    private void showError(Exception e) {
         JOptionPane.showMessageDialog(this, e.getMessage());
+    }
+    private void showError(String s) {
+        JOptionPane.showMessageDialog(this,s);
     }
 
     private void handleNewCommand() {
@@ -572,6 +592,35 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
 
     private JPanel prepareImportPanel() {
     JPanel panel = new JPanel();
+    ButtonGroup bg = new ButtonGroup();
+    rdiImport = new JRadioButton(Utility.getString("importpanel.radiobutton.import"));
+    rdiExport = new JRadioButton(Utility.getString("importpanel.radiobutton.export"));
+    rdiExport.setSelected(true);
+    bg.add(rdiExport);
+    bg.add(rdiImport);
+    txtFileImport = new JTextField(15);
+    lblFileImport = new JLabel(Utility.getString("importpanel.label.fileimport"));
+    btnFileImport = new JButton(Utility.getString("importpanel.button.fileimport"));
+    btnFileImport.addActionListener(this);
+    btnFileImportProceed = new JButton(Utility.getString("importpanel.button.proceed"));
+    btnFileImportProceed.addActionListener(this);
+    GridBagLayout gbag = new GridBagLayout();
+    panel.setLayout(gbag);
+    GridBagConstraints cons = new GridBagConstraints();
+    prepareConstraint(cons, 1, 1, 0, 1, GridBagConstraints.WEST);
+    panel.add(rdiExport, cons);
+    prepareConstraint(cons, 1, 1, 0, 2, GridBagConstraints.WEST);
+    panel.add(rdiImport, cons);
+    prepareConstraint(cons, 1, 1, 0, 3, GridBagConstraints.WEST);
+    panel.add(lblFileImport,cons);
+    prepareConstraint(cons, 1, 1, 1, 3, GridBagConstraints.WEST);
+    panel.add(txtFileImport, cons);
+    prepareConstraint(cons, 1, 1, 2, 3, GridBagConstraints.EAST);
+    panel.add(btnFileImport, cons);
+    prepareConstraint(cons, 1, 1, 0, 4, GridBagConstraints.EAST);
+    panel.add(btnFileImportProceed, cons);
+    
+    
     return panel;
     }
 
@@ -585,7 +634,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         if  (dataFile.exists())
         {
             if(
-            getConfirmation (Utility.getString("settingspanel.file.override",new String[]{dataFile.getName()}))
+            getConfirmation (Utility.getString("settingspanel.file.override",new String[]{dataFile.getName()}),Utility.getString("file.override.warning.title"))
             )
             {
                 Settings.DATA_FILE = dataFile;
@@ -593,7 +642,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
             }
         }
         else//does not exist
-            if (getConfirmation (Utility.getString("settingspanel.file.create",new String[]{dataFile.getName()})))
+        if (getConfirmation(Utility.getString("settingspanel.file.create",new String[]{dataFile.getName()}),Utility.getString("file.create.warning.title")))
             {
                 try{
                 dataFile.createNewFile();
@@ -622,6 +671,74 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
        Language lang = new Language(Settings.LOCALE.getLanguage(),"");
        comboLanguage.setSelectedItem(lang);
     }
-    
-    
+
+    private void handleFileImportSelectCommand() {
+        JFileChooser chooser = new JFileChooser(".");
+        chooser.setVisible(true);
+        File dataFile = null;
+        int returnVal = chooser.showOpenDialog(this);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            {
+            dataFile = chooser.getSelectedFile();
+            txtFileImport.setText(dataFile.getName());
+            }
+    }
+    }
+    private void exportToFile(File dataFile) {
+        FileContactsHandler fHandler = new FileContactsHandler();
+        try{
+        fHandler.save(ContactRepository.getInstance().getContactsList(), dataFile);
+        }catch(Exception e){
+            showError(e);
+        }
+    }
+
+    private void importFromFile(File dataFile) {
+        FileContactsHandler fHandler = new FileContactsHandler();
+        ProgressFrame progress = new ProgressFrame();
+        progress.setVisible(true);
+        try{
+        Collection<Contact> c = fHandler.loadContacts(dataFile);
+        for (Contact contact:c){
+            ContactRepository.getInstance().addContact(contact);
+            progress.contactAdded(contact);
+        }
+        progress.finished();
+        }catch(Exception e){
+            showError(e);
+        }
+        
+    }
+
+    private void handleFileImportProceedCommand() {
+        File dataFile = new File(txtFileImport.getText().trim());  
+        if  (dataFile.exists()){ 
+          if (rdiExport.isSelected())//file exists and we want to write on it
+            {
+            if(
+            getConfirmation (Utility.getString("importpanel.file.override",new String[]{dataFile.getName()}),Utility.getString("file.override.warning.title"))
+            )
+                exportToFile(dataFile);
+            else//user dont accept
+                ;
+          }
+            else if (rdiImport.isSelected())//file exist for import
+                importFromFile(dataFile);
+        }else 
+        {//file does not exist
+            if (rdiExport.isSelected()){
+            if(
+            getConfirmation (Utility.getString("importpanel.file.create",new String[]{dataFile.getName()}),Utility.getString("file.create.warning.title"))
+            )
+            try{    
+            dataFile.createNewFile();
+            
+            }catch(Exception e){
+                showError(e);
+            }
+            }
+            else
+                showError(Utility.getString("importpanel.file.inexistant",new String[]{dataFile.getName()}));
+        }
+        }
 }

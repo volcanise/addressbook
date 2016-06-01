@@ -6,6 +6,7 @@
 package persistence;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.PrintWriter;
@@ -24,10 +25,10 @@ import utils.Utility;
 public class FileContactsHandler implements ContactsLoader, ContactsSaver{
 
     @Override
-    public Collection<Contact> loadContacts() throws Exception{
+    public Collection<Contact> loadContacts(File file) throws Exception{
         ArrayList<Contact> lst = new ArrayList<Contact>();
     try{
-        FileReader fin = new FileReader(Settings.DATA_FILE);
+        FileReader fin = new FileReader(file);
         BufferedReader br = new BufferedReader(fin);
         String line = null;
         while((line = br.readLine()) != null){
@@ -78,8 +79,8 @@ public class FileContactsHandler implements ContactsLoader, ContactsSaver{
         return contact;
     }
     @Override
-    public void save(Iterator<Contact> itr) throws Exception{
-       FileOutputStream fout = new FileOutputStream(Settings.DATA_FILE);
+    public void save(Iterator<Contact> itr, File file) throws Exception{
+       FileOutputStream fout = new FileOutputStream(file);
         PrintWriter printer = new PrintWriter(fout);
         while(itr.hasNext()){
             Contact cnt = itr.next();
