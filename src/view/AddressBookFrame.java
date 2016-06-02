@@ -695,15 +695,17 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
 
     private void importFromFile(File dataFile) {
         FileContactsHandler fHandler = new FileContactsHandler();
-        ProgressFrame progress = new ProgressFrame();
+        ProgressDialog progress = new ProgressDialog(this);
+        progress.setLocationRelativeTo(this);
         progress.setVisible(true);
+        int counter = 0;
         try{
         Collection<Contact> c = fHandler.loadContacts(dataFile);
         for (Contact contact:c){
-            ContactRepository.getInstance().addContact(contact);
-            progress.contactAdded(contact);
-        }
-        progress.finished();
+                counter++;
+                progress.contactAdded(contact);
+            }
+        progress.finished(counter);
         }catch(Exception e){
             showError(e);
         }

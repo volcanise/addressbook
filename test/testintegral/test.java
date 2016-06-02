@@ -23,7 +23,7 @@ public class test implements WindowListener, Runnable{
     Locale initialLocale = Settings.LOCALE;
     boolean redraw = false;
     private void createWindow(){
-                    try{
+       try{
 
            Settings.loadFromFile();
            FileContactsHandler loader = new FileContactsHandler();
