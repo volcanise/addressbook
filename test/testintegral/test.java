@@ -26,8 +26,7 @@ public class test implements WindowListener, Runnable{
     Locale initialLocale = Settings.LOCALE;
     boolean redraw = false;
     private void createWindow(){
-                    try{
-
+       try{
            Settings.loadFromFile();
            FileContactsHandler loader = new FileContactsHandler();
            Collection collection = loader.loadContacts();
@@ -37,7 +36,7 @@ public class test implements WindowListener, Runnable{
            frame.setTitle(Utility.getString("addressbook.title"));
            frame.pack();
            frame.setVisible(true);
-                       }catch(Exception e){
+           }catch(Exception e){
             e.printStackTrace();
         }
 
