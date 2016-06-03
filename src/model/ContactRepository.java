@@ -24,6 +24,7 @@ public class ContactRepository {
     }
     public void addContact(Contact c){
         contactsSet.put(c.getId(),c);
+        
     }
     public void addAll(Collection<Contact> cn){
         for(Contact c:cn)

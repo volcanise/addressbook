@@ -7,11 +7,8 @@ package testintegral;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Collection;
 import java.util.Locale;
-import java.util.Properties;
 import model.ContactRepository;
 import model.Settings;
 import persistence.FileContactsHandler;
@@ -27,9 +24,10 @@ public class test implements WindowListener, Runnable{
     boolean redraw = false;
     private void createWindow(){
        try{
+
            Settings.loadFromFile();
            FileContactsHandler loader = new FileContactsHandler();
-           Collection collection = loader.loadContacts();
+           Collection collection = loader.loadContacts(Settings.DATA_FILE);
            ContactRepository.getInstance().addAll(collection);
            AddressBookFrame frame = new AddressBookFrame();
            frame.addWindowListener(this);
