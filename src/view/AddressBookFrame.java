@@ -685,30 +685,20 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     }
     }
     private void exportToFile(File dataFile) {
-        FileContactsHandler fHandler = new FileContactsHandler();
-        try{
-        fHandler.save(ContactRepository.getInstance().getContactsList(), dataFile);
-        }catch(Exception e){
-            showError(e);
-        }
+        ProgressDialog progress = new ProgressDialog(this);
+        ExportFileSwingWorker worker = new ExportFileSwingWorker(dataFile, this,progress);
+        progress.setLocationRelativeTo(this);
+        worker.execute();
+        progress.setVisible(true);
     }
 
     private void importFromFile(File dataFile) {
-        FileContactsHandler fHandler = new FileContactsHandler();
         ProgressDialog progress = new ProgressDialog(this);
+        ImportFileSwingWorker worker = new ImportFileSwingWorker(dataFile, this,progress);
         progress.setLocationRelativeTo(this);
+        worker.execute();
         progress.setVisible(true);
-        int counter = 0;
-        try{
-        Collection<Contact> c = fHandler.loadContacts(dataFile);
-        for (Contact contact:c){
-                counter++;
-                progress.contactAdded(contact);
-            }
-        progress.finished(counter);
-        }catch(Exception e){
-            showError(e);
-        }
+
         
     }
 

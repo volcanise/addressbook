@@ -84,28 +84,14 @@ public class FileContactsHandler implements ContactsLoader, ContactsSaver{
         PrintWriter printer = new PrintWriter(fout);
         while(itr.hasNext()){
             Contact cnt = itr.next();
-            printer.println(prepareString(cnt));
+            printer.println(Utility.prepareString(cnt));
         }
         printer.flush();
         //printer.close();
         fout.close();
     }
 
-    private String prepareString(Contact contact) {
-        String record = Utility.nvl(contact.getLastName(),"") + Settings.DELIMITER +
-                        Utility.nvl(contact.getMiddleName(),"") + Settings.DELIMITER +
-                        Utility.nvl(contact.getFirstName(),"") + Settings.DELIMITER +
-                        Utility.nvl(contact.getTel(),"") + Settings.DELIMITER +
-                        Utility.nvl(contact.getEmail(),"") + Settings.DELIMITER +
-                        Utility.nvl(contact.getCountry(),"") + Settings.DELIMITER +
-                        Utility.nvl(contact.getZip(),"") + Settings.DELIMITER +
-                        Utility.nvl(contact.getState(),"") + Settings.DELIMITER +
-                        Utility.nvl(contact.getAddress1(),"") + Settings.DELIMITER +
-                        Utility.nvl(contact.getAddress2(),"") + Settings.DELIMITER +
-                        Utility.nvl(contact.getCity(),"");
-                return record;
-       }
-
+ 
     
     
 }
