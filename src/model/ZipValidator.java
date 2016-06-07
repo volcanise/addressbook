@@ -5,9 +5,11 @@
  */
 package model;
 
+import utils.Utility;
+
 /**
  *
- * @author shahin.behrooz@gmail.com
+ * 
  */
 public class ZipValidator implements Validator {
     public final String CA_ZIP_PATTERN = "^(?!.*[DFIOQU])[A-VXY][0-9][A-Z] ?[0-9][A-Z][0-9]$";
@@ -17,27 +19,27 @@ public class ZipValidator implements Validator {
     public ZipValidator() {
         this.country = Settings.DEFAULT_COUNTRY;
     }
-
+    // To validate the Zip format, the country attribut needs to be get prior
     public void validate(String field,Contact contact) throws InvalidFieldException {
-        //todo the messages must be customized
+        
         if (utils.Utility.isEmpty(field) && Settings.ZIP_REQUIRED)
-            throw new InvalidFieldException("ZIP code is required.");//todo to be customized
+            throw new InvalidFieldException(Utility.getString("invalidFieldException.zipValidator"));
         String countryStr = contact.getCountry();
         if (!utils.Utility.isEmpty(countryStr))
-        if (countryStr.equals("CA"))
+        if (countryStr.equals("CA")||countryStr.equals("ca")||countryStr.equals("canada")||countryStr.equals("CANADA"))
             country = Settings.CA;
-        else if (countryStr.equals("US"))
+        else if (countryStr.equals("US")||countryStr.equals("us"))
             country = Settings.US;
         else 
             country = Settings.OTHER;
         switch (country){
             case(Settings.CA):
                 if (!field.matches(CA_ZIP_PATTERN))
-                    throw new InvalidFieldException(field + " is not a valid canadian zip code.");
+                    throw new InvalidFieldException("'"+field +"' "+Utility.getString("invalidFieldException.canadianZipValidator"));
                 break;
             case (Settings.US):
                 if (!field.matches(US_ZIP_PATTERN))
-                    throw new InvalidFieldException(field + " is not a valid US zip code.");
+                    throw new InvalidFieldException("'"+field +"' "+ Utility.getString("invalidFieldException.USZipValidator"));
                 break;
             default:
                 return;

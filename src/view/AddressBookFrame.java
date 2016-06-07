@@ -56,7 +56,7 @@ import utils.Utility;
 
 /**
  *
- * @author shahin.behrooz@gmail.com
+ * 
  */
 public class AddressBookFrame extends JFrame implements ActionListener, ListSelectionListener {
 
@@ -122,7 +122,8 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         // Create the ListModel
         defModel = new DefaultListModel();
         //Create the list and put it in a scroll pane.
-        lstContacts = new JList();//Made ! To check ! (todo to be changed to make enable just one selection)
+        lstContacts = new JList();
+        //Enable just one selection
         lstContacts.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         lstContacts.setSelectedIndex(0);
         lstContacts.setModel(defModel);
@@ -141,14 +142,14 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         leftPanel.add(scrPane);
         // Buttons settings
         JPanel bottomLine = new JPanel(new GridLayout(1, 5));
-        btnNew = new JButton(Utility.getString("addressbook.button.new"));//todo make label customized
+        btnNew = new JButton(Utility.getString("addressbook.button.new"));//make label customized
         btnNew.addActionListener(this);
         bottomLine.add(btnNew);
         
         btnDelete = new JButton(Utility.getString("addressbook.button.delete"));
         btnDelete.addActionListener(this);
         bottomLine.add(btnDelete);
-        btnEdit = new JButton(Utility.getString("addressbook.button.edit"));//todo make label customized
+        btnEdit = new JButton(Utility.getString("addressbook.button.edit"));//make label customized
         btnEdit.addActionListener(this);
         bottomLine.add(btnEdit);
         btnSave = new JButton(Utility.getString("addressbook.button.save"));
@@ -169,15 +170,15 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(middlePanel, BorderLayout.NORTH);
-       // mainPanel.add(new JSeparator(), BorderLayout.CENTER);// Adding a Jsperator in the Main Panel
+        mainPanel.add(new JSeparator(), BorderLayout.CENTER);// Adding a Jsperator in the Main Panel
         mainPanel.add(bottomLine, BorderLayout.SOUTH);
-        // The Settings GUI, add language option
+        // The Settings and Import/Export GUI
         JPanel settingsPanel = prepareSettingsPanel();
         //JPanel importPanel = prepareImportPanel();
         // Settings of the JTabbedPane
         JPanel importPanel = prepareImportPanel();
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.add(Utility.getString("firsttab.title"), mainPanel);//todo must be localized
+        tabbedPane.add(Utility.getString("firsttab.title"), mainPanel);// must be localized
         tabbedPane.add(Utility.getString("secondtab.title"), settingsPanel);
         tabbedPane.add(Utility.getString("thirdtab.title"),importPanel);
         this.setContentPane(tabbedPane);
@@ -531,7 +532,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         lstContacts.clearSelection();
         setTextFieldsEditability(true);
     }
-
+   // The setting panel in the JTabedPane
     private JPanel prepareSettingsPanel() {
         JPanel settingsPanel = new JPanel();  
         BoxLayout bl = new BoxLayout(settingsPanel, BoxLayout.Y_AXIS);
@@ -589,7 +590,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         reflectSettings();//reflect settings on components
         return settingsPanel;
     }
-
+    // The ImportPanel panel in the JTabbedPane
     private JPanel prepareImportPanel() {
     JPanel panel = new JPanel();
     ButtonGroup bg = new ButtonGroup();
@@ -607,6 +608,9 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     GridBagLayout gbag = new GridBagLayout();
     panel.setLayout(gbag);
     GridBagConstraints cons = new GridBagConstraints();
+    //margin set to 
+    cons.fill = GridBagConstraints.NONE;
+    cons.insets = new Insets(7, 7, 7, 7);
     prepareConstraint(cons, 1, 1, 0, 1, GridBagConstraints.WEST);
     panel.add(rdiExport, cons);
     prepareConstraint(cons, 1, 1, 0, 2, GridBagConstraints.WEST);
@@ -617,10 +621,9 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     panel.add(txtFileImport, cons);
     prepareConstraint(cons, 1, 1, 2, 3, GridBagConstraints.EAST);
     panel.add(btnFileImport, cons);
-    prepareConstraint(cons, 1, 1, 0, 4, GridBagConstraints.EAST);
+    prepareConstraint(cons, 1, 1, 3, 3, GridBagConstraints.EAST);
     panel.add(btnFileImportProceed, cons);
-    
-    
+     
     return panel;
     }
 

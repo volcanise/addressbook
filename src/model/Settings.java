@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 
 /**
  *
- * @author shahin.behrooz@gmail.com
+ * 
  */
 public class Settings {
     public static final int CA = 25;
@@ -33,7 +33,7 @@ public class Settings {
     public static String DELIMITER;// = ",";
     public static Locale LOCALE = new Locale("en");
     public static ResourceBundle resources = ResourceBundle.getBundle("resources",LOCALE);
-    public static String[] SUPPURTED_LANGS = {"en","fr","ar"};
+    public static String[] SUPPURTED_LANGS = {"en","fr"};
 
     public static void saveToFile() {
            try{
@@ -63,7 +63,7 @@ public static void loadFromFile() throws Exception{
            if (value != null)
                if (value.equals("CA")) 
                  Settings.DEFAULT_COUNTRY = Settings.CA;
-               else if (value == "US") 
+               else if (value.equals("US")) 
                  Settings.DEFAULT_COUNTRY = Settings.US;
                  else
                    Settings.DEFAULT_COUNTRY = Settings.OTHER;
