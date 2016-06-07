@@ -6,7 +6,7 @@
 package model;
 
 /**
- *
+ * Validates email entries
  * @author shahin.behrooz@gmail.com
  */
 public class EmailValidator implements Validator{
