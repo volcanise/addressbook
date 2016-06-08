@@ -359,7 +359,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     // is called when list selection changes and the new values must be shown in text fields
     public void valueChanged(ListSelectionEvent e) {
         Contact ct = (Contact) lstContacts.getSelectedValue();
-        if (ct==null) {// How it comes to compare an object to null ?? its an exception once you put it as .equals(null)
+        if (ct==null) {
             resetTextFields();
             return;
         }
