@@ -17,47 +17,49 @@ import view.AddressBookFrame;
 
 /**
  *
- * @author shahin.behrooz@gmail.com
+ *
  */
-public class test implements WindowListener, Runnable{
+public class test implements WindowListener, Runnable {
+
     Locale initialLocale = Settings.LOCALE;
     boolean redraw = false;
-    private void createWindow(){
-       try{
 
-           Settings.loadFromFile();
-           FileContactsHandler loader = new FileContactsHandler();
-           Collection collection = loader.loadContacts(Settings.DATA_FILE);
-           ContactRepository.getInstance().addAll(collection);
-           AddressBookFrame frame = new AddressBookFrame();
-           frame.addWindowListener(this);
-           frame.setTitle(Utility.getString("addressbook.title"));
-           frame.pack();
-           frame.setVisible(true);
-           }catch(Exception e){
-            e.printStackTrace();
+    private void createWindow() {
+        try {
+
+            Settings.loadFromFile();
+            FileContactsHandler loader = new FileContactsHandler();
+            Collection collection = loader.loadContacts(Settings.DATA_FILE);
+            ContactRepository.getInstance().addAll(collection);
+            AddressBookFrame frame = new AddressBookFrame();
+            frame.addWindowListener(this);
+            frame.setTitle(Utility.getString("addressbook.title"));
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();//comments
         }
 
     }
-    
-    public static void main (String[] args) throws Throwable{
-        
+
+    public static void main(String[] args) throws Throwable {
+
         test tst = new test();
         Object obj = new Object();
-        do{
-        tst.redraw = false;    
-        Thread th = new Thread(tst);
-        th.start();
-        synchronized(tst){
-        try{
-            tst.wait();
-        }catch(InterruptedException e){
-            e.printStackTrace();
-        }
-        }
+        do {
+            tst.redraw = false;
+            Thread th = new Thread(tst);
+            th.start();
+            synchronized (tst) {
+                try {
+                    tst.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-        while (tst.redraw);
-            
+            }
+        } while (tst.redraw);
+
     }
 
     @Override
@@ -71,10 +73,12 @@ public class test implements WindowListener, Runnable{
     
     @Override
     public void windowClosed(WindowEvent e) {
-        if (Settings.LOCALE != initialLocale)
+        if (Settings.LOCALE != initialLocale) {
             redraw = true;
-        synchronized(this){
-        this.notifyAll();}
+        }
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
     @Override
@@ -95,6 +99,6 @@ public class test implements WindowListener, Runnable{
 
     @Override
     public void run() {
-    createWindow();
+        createWindow();
     }
 }

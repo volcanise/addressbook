@@ -5,6 +5,8 @@
  */
 package model;
 
+import utils.Utility;
+
 /**
  *
  * @author shahin.behrooz@gmail.comsssss
@@ -15,8 +17,8 @@ public class TelValidator implements Validator {
     }
     public void validate(String field,Contact contact) throws InvalidFieldException{
         //todo exception message must be customized
-        if ((Settings.TEL_REQUIRED) && ((field == null) || (field.trim().length() == 0)))
-                throw new InvalidFieldException("Phone number cannot be empty.");
+        if ((Settings.TEL_REQUIRED) && Utility.isEmpty(field))
+                throw new InvalidFieldException(Utility.getString("invalidFieldException.telValidator"));
      return;
     }
 
