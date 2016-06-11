@@ -5,15 +5,18 @@
  */
 package model;
 
+import utils.Utility;
+
 /**
- * Validates email entries
- * @author shahin.behrooz@gmail.com
+ *
+ * 
  */
 public class EmailValidator implements Validator{
+    //Validation Format
     private String reg = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     public void validate(String field,Contact c) throws InvalidFieldException{
         if (field != null)
             if (!field.matches(reg))
-                throw new InvalidFieldException(field + " is not a valid Email Addresse");//todo change message
+                throw new InvalidFieldException(Utility.getString("invalidFieldException.emailValidator"));
     }
 }

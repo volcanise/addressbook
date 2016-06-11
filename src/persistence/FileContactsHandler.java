@@ -58,7 +58,11 @@ public class FileContactsHandler implements ContactsLoader, ContactsSaver{
         }
         contact.setMiddleName(s[1]);
         contact.setFirstName(s[2]);
+        try{
         contact.setTel(s[3]);
+        }catch(InvalidFieldException e){
+            System.out.println("Empty telephone field.");
+        }
         try{
         contact.setEmail(s[4]);
         }catch(InvalidFieldException e){

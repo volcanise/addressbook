@@ -5,9 +5,11 @@
  */
 package model;
 
+import utils.Utility;
+
 /**
  *
- * @author shahin.behrooz@gmail.com
+ * 
  * 
  */
 class NameValidator implements Validator {
@@ -15,6 +17,6 @@ class NameValidator implements Validator {
     }
     public void validate(String field,Contact contact) throws InvalidFieldException{
         if (ContactRepository.getInstance().contains(contact))
-            throw new InvalidFieldException("This contact already exists.");//todo change message
+            throw new InvalidFieldException(Utility.getString("invalidFieldException.nameValidator"));//todo change message
     }
 }

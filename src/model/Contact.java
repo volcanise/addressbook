@@ -90,7 +90,8 @@ public class Contact implements Comparable<Contact>{
     /**
      * @param tel the tel to set
      */
-    public void setTel(String tel) {
+    public void setTel(String tel) throws InvalidFieldException{
+        telValidator.validate(tel, this);
         this.tel = tel;
     }
 
