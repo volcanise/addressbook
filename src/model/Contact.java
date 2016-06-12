@@ -6,6 +6,7 @@
 package model;
 
 import java.util.Objects;
+import utils.Utility;
 
 /**
  *
@@ -39,8 +40,7 @@ public class Contact implements Comparable<Contact>{
     }
 
     String getId() {
-
-    return lastName.toLowerCase() + firstName.toLowerCase();
+    return Utility.nvl(lastName, "").toLowerCase() + Utility.nvl(firstName,"").toLowerCase();
     }
     /** 
      * 
