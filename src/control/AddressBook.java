@@ -39,6 +39,7 @@ public class AddressBook implements WindowListener, Runnable {
             frame.setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();//comments
+            System.exit(0);
         }
 
     }

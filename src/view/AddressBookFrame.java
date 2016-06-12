@@ -110,7 +110,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     public void loadContacts() {
         Iterator<Contact> itr = ContactRepository.getInstance().getContactsList();
         while (itr.hasNext()) {
-            ((DefaultListModel) lstContacts.getModel()).addElement(itr.next());//Returns:the ListModel that provides the displayed list of items
+            defModel.addElement(itr.next());
         }
     }
 
@@ -439,7 +439,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     private void handleEditCommand() {
             contactForEdit = (Contact)lstContacts.getSelectedValue();
             if (contactForEdit != null){
-            setTextFieldsEditability(true);//makes fields editable and lets it until next save or cancel operations
+            setTextFieldsEditability(true);//makes fields editable and lets it so until next save or cancel operations
             }
     }
     private void handleApplyCommand() {//apply settings
@@ -458,11 +458,11 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     }
 
     private void handleSaveCommand() {
-            if (txtLastName.isEditable())//edit shows we are in the process of editing
+            if (txtLastName.isEditable())//shows we are in the process of editing
             {
                 boolean success = applyChanges(); // applies changes 
                 if (success)
-                    setTextFieldsEditability(false);
+                    setTextFieldsEditability(false);//sets fields noneditable
                 else
                     return;
             }
@@ -476,6 +476,17 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
             }
 
     }
+    
+    private void updateList(){
+        try{
+                defModel.removeAllElements();// removes all elements of jlist
+                loadContacts();
+            } catch (Exception ex) {
+                ex.printStackTrace(System.out);
+            }
+
+    }
+    
     private void handleEmailCheckBoxChanged(){
         if (!chkEmail.isSelected())
             chkEmailValidation.setSelected(false);
@@ -706,7 +717,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             {
             dataFile = chooser.getSelectedFile();
-            txtFileImport.setText(dataFile.getName());
+            txtFileImport.setText(dataFile.getPath());
             }
     }
     }
@@ -724,8 +735,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         progress.setLocationRelativeTo(this);
         worker.execute();
         progress.setVisible(true);
-
-        
+        updateList();
     }
 
     private void handleFileImportProceedCommand() {

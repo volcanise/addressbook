@@ -40,7 +40,7 @@ public class Contact implements Comparable<Contact>{
 
     String getId() {
 
-    return lastName + firstName;
+    return lastName.toLowerCase() + firstName.toLowerCase();
     }
     /** 
      * 
@@ -67,9 +67,9 @@ public class Contact implements Comparable<Contact>{
 
     @Override
     public int compareTo(Contact c) {
-        int firstCompare = (this.getLastName().compareTo(c.getLastName()));//  first by lastname
+        int firstCompare = (this.getLastName().toLowerCase().compareTo(c.getLastName().toLowerCase()));//  first by lastname
         if (firstCompare == 0)
-            return (this.getFirstName().compareTo(c.firstName));
+            return (this.getFirstName().toLowerCase().compareTo(c.getFirstName().toLowerCase()));
         return firstCompare;
     }
 

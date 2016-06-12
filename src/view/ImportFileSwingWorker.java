@@ -7,10 +7,12 @@ package view;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import model.Contact;
+import model.ContactRepository;
 import persistence.FileContactsHandler;
 
 /**
@@ -33,8 +35,11 @@ public class ImportFileSwingWorker extends SwingWorker {
         int counter = 0;
         try{
         Collection<Contact> c = fHandler.loadContacts(dataFile);
-        for (Contact contact:c){
+        Iterator<Contact> itr = c.iterator();
+        while(itr.hasNext()){
+                Contact contact = itr.next();
                 counter++;
+                ContactRepository.getInstance().addContact(contact);
                 progress.contactAdded(contact);
             }
         progress.importFinished(counter);
