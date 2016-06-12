@@ -17,6 +17,6 @@ class NameValidator implements Validator {
     }
     public void validate(String field,Contact contact) throws InvalidFieldException{
         if (ContactRepository.getInstance().contains(contact))
-            throw new InvalidFieldException(Utility.getString("invalidFieldException.nameValidator"));//todo change message
+            throw new InvalidFieldException(Utility.getString("invalidfieldexception.namevalidator"));//todo change message
     }
 }

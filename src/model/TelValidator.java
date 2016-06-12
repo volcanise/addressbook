@@ -16,9 +16,9 @@ public class TelValidator implements Validator {
     public TelValidator() {
     }
     public void validate(String field,Contact contact) throws InvalidFieldException{
-        //todo exception message must be customized
+        
         if ((Settings.TEL_REQUIRED) && Utility.isEmpty(field))
-                throw new InvalidFieldException(Utility.getString("invalidFieldException.telValidator"));
+                throw new InvalidFieldException(Utility.getString("invalidfieldexception.telvalidator"));
      return;
     }
 

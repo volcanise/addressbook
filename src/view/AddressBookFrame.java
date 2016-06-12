@@ -352,6 +352,10 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         else if (obj.equals(btnFileImportProceed)) {
             handleFileImportProceedCommand();
         }
+        else if (obj.equals(chkEmail))
+            handleEmailCheckBoxChanged();
+        else if (obj.equals(chkZip))
+            handleZipCheckBoxChanged();
  
     }
 
@@ -472,6 +476,16 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
             }
 
     }
+    private void handleEmailCheckBoxChanged(){
+        if (!chkEmail.isSelected())
+            chkEmailValidation.setSelected(false);
+        chkEmailValidation.setEnabled(chkEmail.isSelected());
+    }
+    private void handleZipCheckBoxChanged(){
+        if (!chkZip.isSelected())
+            chkZipValidation.setSelected(false);
+        chkZipValidation.setEnabled(chkZip.isSelected());
+    }
 
     private void handleCancelCommand() {
         setTextFieldsEditability(false);
@@ -545,9 +559,11 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
         JPanel topPanel = new JPanel();
         topPanel.add(new JLabel(Utility.getString("settingspanel.label.email.required")));
         chkEmail = new JCheckBox();
+        chkEmail.addActionListener(this);
         topPanel.add(chkEmail);
         topPanel.add(new JLabel(Utility.getString("settingspanel.label.zip.required")));
         chkZip = new JCheckBox();
+        chkZip.addActionListener(this);
         topPanel.add(chkZip);
         topPanel.add(new JLabel(Utility.getString("settingspanel.label.tel.required")));
         chkTel = new JCheckBox();
@@ -657,7 +673,7 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
                 Settings.DATA_FILE = dataFile;
                 txtFileSelect.setText(Settings.DATA_FILE.getName());
                 }catch(IOException e){
-                    e.printStackTrace();//todo must be changed
+                    e.printStackTrace();
             }
         }
         
@@ -672,9 +688,11 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     private void reflectSettings() {
        chkEmail.setSelected(Settings.EMAIL_REQUIRED);
        chkEmailValidation.setSelected(Settings.VALIDATE_EMAIL);
+       chkEmailValidation.setEnabled(chkEmail.isSelected());
        chkTel.setSelected(Settings.TEL_REQUIRED);
        chkZip.setSelected(Settings.ZIP_REQUIRED);
        chkZipValidation.setSelected(Settings.VALIDATE_ZIP);
+       chkZipValidation.setEnabled(chkZip.isSelected());
        txtFileSelect.setText(Settings.DATA_FILE.getName());
        Language lang = new Language(Settings.LOCALE.getLanguage(),"");
        comboLanguage.setSelectedItem(lang);
@@ -711,7 +729,10 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
     }
 
     private void handleFileImportProceedCommand() {
-        File dataFile = new File(txtFileImport.getText().trim());  
+        String fileName = txtFileImport.getText().trim();
+        if (fileName.length() == 0)
+            return;
+        File dataFile = new File(fileName);  
         if  (dataFile.exists()){ 
           if (rdiExport.isSelected())//file exists and we want to write on it
             {

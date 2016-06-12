@@ -23,7 +23,7 @@ public class ZipValidator implements Validator {
     public void validate(String field,Contact contact) throws InvalidFieldException {
         
         if (utils.Utility.isEmpty(field) && Settings.ZIP_REQUIRED)
-            throw new InvalidFieldException(Utility.getString("invalidFieldException.zipValidator"));
+            throw new InvalidFieldException(Utility.getString("invalidfieldexception.zipvalidator"));
         String countryStr = contact.getCountry();
         if (!utils.Utility.isEmpty(countryStr))
         if (countryStr.equals("CA")||countryStr.equals("ca")||countryStr.equals("canada")||countryStr.equals("CANADA"))
@@ -35,11 +35,11 @@ public class ZipValidator implements Validator {
         switch (country){
             case(Settings.CA):
                 if (!field.matches(CA_ZIP_PATTERN))
-                    throw new InvalidFieldException("'"+field +"' "+Utility.getString("invalidFieldException.canadianZipValidator"));
+                    throw new InvalidFieldException("'"+field +"' "+Utility.getString("invalidfieldexception.canadianzipvalidator"));
                 break;
             case (Settings.US):
                 if (!field.matches(US_ZIP_PATTERN))
-                    throw new InvalidFieldException("'"+field +"' "+ Utility.getString("invalidFieldException.USZipValidator"));
+                    throw new InvalidFieldException("'"+field +"' "+ Utility.getString("invalidfieldexception.uszipvalidator"));
                 break;
             default:
                 return;

@@ -51,7 +51,7 @@ public class Settings {
            fout.flush();
            fout.close();
            }catch(Exception e){
-               e.printStackTrace();// todo change
+               e.printStackTrace();
            }
 
     }

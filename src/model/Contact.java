@@ -42,8 +42,8 @@ public class Contact implements Comparable<Contact>{
 
     return lastName + firstName;
     }
-    /** modified for test
-     * todo: a ajouter les autres setters selon exemple
+    /** 
+     * 
      * */
     public void setZip(String zip)throws InvalidFieldException{
         this.zip = zip;//first set then check. this is for situation that we ignored validation and saved to file and 
@@ -135,7 +135,8 @@ public class Contact implements Comparable<Contact>{
      */
     public void setEmail(String email) throws InvalidFieldException{
         this.email = email;//first set it
-        emailValidator.validate(email, this);
+        if(Settings.VALIDATE_EMAIL)
+            emailValidator.validate(email, this);
     }
 
     /**

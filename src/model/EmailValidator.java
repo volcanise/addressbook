@@ -17,6 +17,6 @@ public class EmailValidator implements Validator{
     public void validate(String field,Contact c) throws InvalidFieldException{
         if (field != null)
             if (!field.matches(reg))
-                throw new InvalidFieldException(Utility.getString("invalidFieldException.emailValidator"));
+                throw new InvalidFieldException(Utility.getString("invalidfieldexception.emailvalidator",new String[]{field}));
     }
 }
