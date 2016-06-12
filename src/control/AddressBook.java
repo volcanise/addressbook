@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Locale;
 import model.ContactRepository;
 import model.Settings;
+import persistence.ContactsLoader;
 import persistence.FileContactsHandler;
 import utils.Utility;
 import view.AddressBookFrame;
@@ -28,7 +29,7 @@ public class AddressBook implements WindowListener, Runnable {
         try {
 
             Settings.loadFromFile();
-            FileContactsHandler loader = new FileContactsHandler(Settings.DATA_FILE);
+            ContactsLoader loader = new FileContactsHandler(Settings.DATA_FILE);
             Collection collection = loader.loadContacts();
             ContactRepository.getInstance().addAll(collection);
             AddressBookFrame frame = new AddressBookFrame();

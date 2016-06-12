@@ -8,14 +8,12 @@ package view;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import model.Contact;
 import model.ContactRepository;
-import persistence.FileContactsHandler;
 import utils.Utility;
 
 /**

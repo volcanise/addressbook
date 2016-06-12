@@ -51,6 +51,7 @@ import model.InvalidFieldException;
 import model.Language;
 import model.Settings;
 import static model.Settings.LOCALE;
+import persistence.ContactsSaver;
 import persistence.FileContactsHandler;
 import utils.Utility;
 
@@ -466,9 +467,9 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
                 else
                     return;
             }
-            FileContactsHandler fhandler = new FileContactsHandler(Settings.DATA_FILE);
+            ContactsSaver contactSaver = getContactsSaver();
             try {
-                fhandler.save(ContactRepository.getInstance().getContactsList());
+                contactSaver.save(ContactRepository.getInstance().getContactsList());
                 defModel.removeAllElements();// removes all elements of jlist
                 loadContacts();
             } catch (Exception ex) {
@@ -772,4 +773,8 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
                 showError(Utility.getString("importpanel.file.inexistant",new String[]{dataFile.getName()}));
         }
         }
+
+    private ContactsSaver getContactsSaver() {
+        return new FileContactsHandler(Settings.DATA_FILE);
+    }
 }

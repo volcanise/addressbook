@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import model.Contact;
 import model.ContactRepository;
+import persistence.ContactsLoader;
 import persistence.FileContactsHandler;
 
 /**
@@ -31,10 +32,10 @@ public class ImportFileSwingWorker extends SwingWorker {
     }
     @Override
     protected Object doInBackground() throws Exception {
-        FileContactsHandler fHandler = new FileContactsHandler(dataFile);
+        ContactsLoader contactsLoader = getContactsLoader();
         int counter = 0;
         try{
-        Collection<Contact> c = fHandler.loadContacts();
+        Collection<Contact> c = contactsLoader.loadContacts();
         Iterator<Contact> itr = c.iterator();
         while(itr.hasNext()){
                 Contact contact = itr.next();
@@ -53,6 +54,10 @@ public class ImportFileSwingWorker extends SwingWorker {
     @Override
     protected void process(List chunks) {
         
+    }
+
+    private ContactsLoader getContactsLoader() {
+        return new FileContactsHandler(dataFile);
     }
     
     
