@@ -31,10 +31,10 @@ public class ImportFileSwingWorker extends SwingWorker {
     }
     @Override
     protected Object doInBackground() throws Exception {
-        FileContactsHandler fHandler = new FileContactsHandler();
+        FileContactsHandler fHandler = new FileContactsHandler(dataFile);
         int counter = 0;
         try{
-        Collection<Contact> c = fHandler.loadContacts(dataFile);
+        Collection<Contact> c = fHandler.loadContacts();
         Iterator<Contact> itr = c.iterator();
         while(itr.hasNext()){
                 Contact contact = itr.next();

@@ -14,6 +14,6 @@ import model.Contact;
  * @author shahin.behrooz@gmail.com
  */
 public interface ContactsSaver{
-    public void save(Iterator<Contact> itr,File file) throws Exception;
+    public void save(Iterator<Contact> itr) throws Exception;
     
 }

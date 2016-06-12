@@ -28,8 +28,8 @@ public class test implements WindowListener, Runnable {
         try {
 
             Settings.loadFromFile();
-            FileContactsHandler loader = new FileContactsHandler();
-            Collection collection = loader.loadContacts(Settings.DATA_FILE);
+            FileContactsHandler loader = new FileContactsHandler(Settings.DATA_FILE);
+            Collection collection = loader.loadContacts();
             ContactRepository.getInstance().addAll(collection);
             AddressBookFrame frame = new AddressBookFrame();
             frame.addWindowListener(this);

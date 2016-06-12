@@ -466,9 +466,9 @@ public class AddressBookFrame extends JFrame implements ActionListener, ListSele
                 else
                     return;
             }
-            FileContactsHandler fhandler = new FileContactsHandler();
+            FileContactsHandler fhandler = new FileContactsHandler(Settings.DATA_FILE);
             try {
-                fhandler.save(ContactRepository.getInstance().getContactsList(),Settings.DATA_FILE);
+                fhandler.save(ContactRepository.getInstance().getContactsList());
                 defModel.removeAllElements();// removes all elements of jlist
                 loadContacts();
             } catch (Exception ex) {

@@ -24,8 +24,12 @@ import utils.Utility;
  */
 public class FileContactsHandler implements ContactsLoader, ContactsSaver{
 
+    private File file;
+    public FileContactsHandler(File file){
+        this.file = file;
+    }
     @Override
-    public Collection<Contact> loadContacts(File file) throws Exception{
+    public Collection<Contact> loadContacts() throws Exception{
         ArrayList<Contact> lst = new ArrayList<Contact>();
     try{
         FileReader fin = new FileReader(file);
@@ -83,7 +87,7 @@ public class FileContactsHandler implements ContactsLoader, ContactsSaver{
         return contact;
     }
     @Override
-    public void save(Iterator<Contact> itr, File file) throws Exception{
+    public void save(Iterator<Contact> itr) throws Exception{
        FileOutputStream fout = new FileOutputStream(file);
         PrintWriter printer = new PrintWriter(fout);
         while(itr.hasNext()){

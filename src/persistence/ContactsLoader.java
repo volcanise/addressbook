@@ -15,6 +15,6 @@ import model.Contact;
  */
 public interface ContactsLoader {
     //loads contacts regardless of real location of data, maybe on file or on database etc.
-    public Collection<Contact> loadContacts(File file) throws Exception;
+    public Collection<Contact> loadContacts() throws Exception;
     
 }
